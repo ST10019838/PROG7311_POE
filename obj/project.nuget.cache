@@ -1,8 +1,25 @@
 {
   "version": 2,
-  "dgSpecHash": "bO9S6cuJ25TsLsa/SBk2pJ9hfVG4sITJI16EX8WUS3U8sz/7vyyzoq2uYI/i9HuO+PccePcG32WjVUHiTibsxQ==",
+  "dgSpecHash": "lHm6qoBUpo5kDSFDagrMzr/P76/FbemPJOKeC5oihS0oZ6qAUszhoB8GJxrGugACjTtNpnZGseONyLe7q/WLUw==",
   "success": true,
-  "projectFilePath": "H:\\Year 3\\Semester 1\\PROG7311 - Programming 3A\\POE\\Repo\\PROG7311_POE\\ST10019838_DamianDare_PROG7311_POE\\ST10019838_DamianDare_PROG7311_POE.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "H:\\Year 3\\Semester 1\\PROG7311 - Programming 3A\\POE\\Repo\\ST10019838_DamianDare_PROG7311_POE\\ST10019838_DamianDare_PROG7311_POE.csproj",
+  "expectedPackageFiles": [
+    "D:\\Tools\\C#\\.nuget\\microsoft.aspnetcore.authorization\\8.0.3\\microsoft.aspnetcore.authorization.8.0.3.nupkg.sha512",
+    "D:\\Tools\\C#\\.nuget\\microsoft.aspnetcore.components\\8.0.3\\microsoft.aspnetcore.components.8.0.3.nupkg.sha512",
+    "D:\\Tools\\C#\\.nuget\\microsoft.aspnetcore.components.analyzers\\8.0.3\\microsoft.aspnetcore.components.analyzers.8.0.3.nupkg.sha512",
+    "D:\\Tools\\C#\\.nuget\\microsoft.aspnetcore.components.forms\\8.0.3\\microsoft.aspnetcore.components.forms.8.0.3.nupkg.sha512",
+    "D:\\Tools\\C#\\.nuget\\microsoft.aspnetcore.components.web\\8.0.3\\microsoft.aspnetcore.components.web.8.0.3.nupkg.sha512",
+    "D:\\Tools\\C#\\.nuget\\microsoft.aspnetcore.metadata\\8.0.3\\microsoft.aspnetcore.metadata.8.0.3.nupkg.sha512",
+    "D:\\Tools\\C#\\.nuget\\microsoft.extensions.dependencyinjection\\8.0.0\\microsoft.extensions.dependencyinjection.8.0.0.nupkg.sha512",
+    "D:\\Tools\\C#\\.nuget\\microsoft.extensions.dependencyinjection.abstractions\\8.0.1\\microsoft.extensions.dependencyinjection.abstractions.8.0.1.nupkg.sha512",
+    "D:\\Tools\\C#\\.nuget\\microsoft.extensions.localization\\8.0.3\\microsoft.extensions.localization.8.0.3.nupkg.sha512",
+    "D:\\Tools\\C#\\.nuget\\microsoft.extensions.localization.abstractions\\8.0.3\\microsoft.extensions.localization.abstractions.8.0.3.nupkg.sha512",
+    "D:\\Tools\\C#\\.nuget\\microsoft.extensions.logging.abstractions\\8.0.1\\microsoft.extensions.logging.abstractions.8.0.1.nupkg.sha512",
+    "D:\\Tools\\C#\\.nuget\\microsoft.extensions.options\\8.0.2\\microsoft.extensions.options.8.0.2.nupkg.sha512",
+    "D:\\Tools\\C#\\.nuget\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512",
+    "D:\\Tools\\C#\\.nuget\\microsoft.jsinterop\\8.0.3\\microsoft.jsinterop.8.0.3.nupkg.sha512",
+    "D:\\Tools\\C#\\.nuget\\mudblazor\\6.19.1\\mudblazor.6.19.1.nupkg.sha512",
+    "D:\\Tools\\C#\\.nuget\\system.io.pipelines\\8.0.0\\system.io.pipelines.8.0.0.nupkg.sha512"
+  ],
   "logs": []
 }

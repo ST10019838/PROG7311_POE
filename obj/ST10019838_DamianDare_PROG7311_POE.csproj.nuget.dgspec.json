@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "H:\\Year 3\\Semester 1\\PROG7311 - Programming 3A\\POE\\Repo\\PROG7311_POE\\ST10019838_DamianDare_PROG7311_POE\\ST10019838_DamianDare_PROG7311_POE.csproj": {}
+    "H:\\Year 3\\Semester 1\\PROG7311 - Programming 3A\\POE\\Repo\\ST10019838_DamianDare_PROG7311_POE\\ST10019838_DamianDare_PROG7311_POE.csproj": {}
   },
   "projects": {
-    "H:\\Year 3\\Semester 1\\PROG7311 - Programming 3A\\POE\\Repo\\PROG7311_POE\\ST10019838_DamianDare_PROG7311_POE\\ST10019838_DamianDare_PROG7311_POE.csproj": {
+    "H:\\Year 3\\Semester 1\\PROG7311 - Programming 3A\\POE\\Repo\\ST10019838_DamianDare_PROG7311_POE\\ST10019838_DamianDare_PROG7311_POE.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "H:\\Year 3\\Semester 1\\PROG7311 - Programming 3A\\POE\\Repo\\PROG7311_POE\\ST10019838_DamianDare_PROG7311_POE\\ST10019838_DamianDare_PROG7311_POE.csproj",
+        "projectUniqueName": "H:\\Year 3\\Semester 1\\PROG7311 - Programming 3A\\POE\\Repo\\ST10019838_DamianDare_PROG7311_POE\\ST10019838_DamianDare_PROG7311_POE.csproj",
         "projectName": "ST10019838_DamianDare_PROG7311_POE",
-        "projectPath": "H:\\Year 3\\Semester 1\\PROG7311 - Programming 3A\\POE\\Repo\\PROG7311_POE\\ST10019838_DamianDare_PROG7311_POE\\ST10019838_DamianDare_PROG7311_POE.csproj",
+        "projectPath": "H:\\Year 3\\Semester 1\\PROG7311 - Programming 3A\\POE\\Repo\\ST10019838_DamianDare_PROG7311_POE\\ST10019838_DamianDare_PROG7311_POE.csproj",
         "packagesPath": "D:\\Tools\\C#\\.nuget",
-        "outputPath": "H:\\Year 3\\Semester 1\\PROG7311 - Programming 3A\\POE\\Repo\\PROG7311_POE\\ST10019838_DamianDare_PROG7311_POE\\obj\\",
+        "outputPath": "H:\\Year 3\\Semester 1\\PROG7311 - Programming 3A\\POE\\Repo\\ST10019838_DamianDare_PROG7311_POE\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -44,6 +44,12 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "MudBlazor": {
+              "target": "Package",
+              "version": "[6.19.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
