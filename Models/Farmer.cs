@@ -13,5 +13,9 @@
         //public DateTime CreatedAt { get; set; }
         //public DateTime LastUpdated
         //public User LastUpdatedBy
+
+        public int AdminId { get; set; }
+        public Admin Admin { get; set; } = null!;
+        public ICollection<Product> Products { get; } = new List<Product>();
     }
 }

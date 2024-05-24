@@ -9,5 +9,7 @@
         public string LastName { get; set; } = null!;
 
         // Allow admins to create the categories for the products
+
+        public ICollection<Farmer> Farmers { get; } = new List<Farmer>();
     }
 }
