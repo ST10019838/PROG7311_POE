@@ -1,7 +1,35 @@
-﻿@page "/"
+﻿@using ST10019838_DamianDare_PROG7311_POE.Models
+@using ST10019838_DamianDare_PROG7311_POE.Components.Other
+@using ST10019838_DamianDare_PROG7311_POE.Components.Forms
+@inject IDialogService DialogService
+<!--  HttpClient httpClient 
+     
+ GroupClassFunc="GroupClassFunc" -->
 
+@page "/"
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
+
+@if (/*userIsAdmin*/ true)
+{
+    <AdminPage />
+}
+else
+{
+    <FarmerPage />
+}
+
+
+
+
+
+@code {
+
+    private void OpenDialog()
+    {
+        // var options = new DialogOptions { CloseOnEscapeKey = true, FullScreen = true,  };
+        DialogService.Show<ProductForm>("Create a Product");
+    }
+}
+

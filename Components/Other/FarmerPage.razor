@@ -1,0 +1,109 @@
+﻿@using ST10019838_DamianDare_PROG7311_POE.Models
+@using ST10019838_DamianDare_PROG7311_POE.Components.Other
+@using ST10019838_DamianDare_PROG7311_POE.Components.Forms
+@inject IDialogService DialogService
+
+<!-- @if (/*userIsAdmin*/)
+{
+
+} -->
+<!--<div class="overflow-y-scroll">
+@if (products.Count == 0)
+{
+        <MudText>No products have been added yet</MudText>
+}
+else
+{
+@foreach (Product product in products)
+{
+            <MudText>@product.Name</MudText>
+};
+}
+</div>
+
+GroupClassFunc="GroupClassFunc"
+-->
+@if (/*farmers.Count == 0*/ false)
+{
+    <MudText>No products have been added yet</MudText>
+}
+else
+{
+    <MudDataGrid @ref="dataGrid" MultiSelection="true" Items="@Products" Filterable="true"
+                 Hideable="true" Groupable="true" GroupExpanded="false">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Products</MudText>
+            <MudSpacer />
+            <MudButton @onclick="OpenProductCreationForm" Variant="Variant.Outlined" Color="Color.Primary">
+                Create a Product
+            </MudButton>
+        </ToolBarContent>
+        <Columns>
+            <PropertyColumn Property="x => x.Id" Filterable="false"/>
+            <PropertyColumn Property="x => x.Name" />
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="Product" />
+            </PagerContent>
+        </MudDataGrid>
+}
+
+
+
+
+
+@code {
+    MudDataGrid<Product> dataGrid;
+    bool _customizeGroupTemplate;
+    static bool _customizeGroupBy;
+    Func<FarmerProduct, object> _groupBy = x =>
+    {
+        // if (_customizeGroupBy)
+        //     return _nonmetals.Contains(x.Sign) ? "Nonmetal" : "Metal";
+
+        return x.Farmer.FirstName;
+    };
+
+    // private string GroupClassFunc(GroupDefinition<Product> item)
+    // {
+    //     return item.Grouping.Key?.ToString() == "Nonmetal" || item.Grouping.Key?.ToString() == "Other"
+    //             ? "mud-theme-warning"
+    //             : string.Empty;
+    // }
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     Elements = await httpClient.GetFromJsonAsync<List<Element>>("webapi/periodictable");
+    // }
+
+    void ExpandAllGroups()
+    {
+        dataGrid?.ExpandAllGroups();
+    }
+
+    void CollapseAllGroups()
+    {
+        dataGrid?.CollapseAllGroups();
+    }
+
+    void CustomizeByGroupChanged(bool isChecked)
+    {
+        _customizeGroupBy = isChecked;
+        dataGrid.GroupItems();
+    }
+
+    List<Product> Products = new List<Product>();
+
+
+    // List<Product> products = new List<Product>();
+    // List<Admin> users = new List<Admin>();
+
+    // List<FarmerProduct> Farmers = new List<FarmerProduct>();
+
+
+    private void OpenProductCreationForm()
+    {
+        DialogService.Show<ProductForm>("Product Creation");
+    }
+
+}

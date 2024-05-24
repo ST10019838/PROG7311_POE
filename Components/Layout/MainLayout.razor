@@ -1,26 +1,33 @@
 ﻿@inherits LayoutComponentBase
+
 <MudThemeProvider />
-<MudDialogProvider />
+<MudDialogProvider 
+    FullWidth="true"
+    MaxWidth="MaxWidth.Small"
+    CloseButton="true"
+    DisableBackdropClick="true"
+    NoHeader="false"
+    Position="DialogPosition.Center"
+    CloseOnEscapeKey="true"
+/>
 <MudSnackbarProvider />
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<MudLayout>
+    <MudAppBar Color="Color.Info">
+        <MudStack Row="true" Justify="Justify.SpaceAround" Style="width: 100%">
+            <MudLink Color="Color.Primary">Home</MudLink>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+            @if (/*userIsAdmin*/ true)
+            {
+                <MudLink>Admin</MudLink>
+            }
+            
+        </MudStack>
+    </MudAppBar>
 
-        <article class="content px-4">
+    <MudMainContent>
+        <MudContainer>
             @Body
-        </article>
-    </main>
-</div>
-
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>

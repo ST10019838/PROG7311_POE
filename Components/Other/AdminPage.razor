@@ -1,0 +1,129 @@
+﻿@using ST10019838_DamianDare_PROG7311_POE.Models
+@using ST10019838_DamianDare_PROG7311_POE.Components.Other
+@using ST10019838_DamianDare_PROG7311_POE.Components.Forms
+@inject IDialogService DialogService
+
+
+<!-- @if (/*userIsAdmin*/)
+{
+
+} -->
+<!--<div class="overflow-y-scroll">
+@if (products.Count == 0)
+{
+        <MudText>No products have been added yet</MudText>
+}
+else
+{
+@foreach (Product product in products)
+{
+            <MudText>@product.Name</MudText>
+};
+}
+</div>
+
+GroupClassFunc="GroupClassFunc"
+-->
+@if (/*farmers.Count == 0*/ false)
+{
+    <MudText>No farmers have been added yet</MudText>
+}
+else
+{
+    <MudDataGrid @ref="dataGrid" MultiSelection="true" Items="@FarmerProducts" Filterable="true"
+                 Hideable="true" Groupable="true" GroupExpanded="false">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Farmers and their Products</MudText>
+            <MudSpacer />
+            <MudButton @onclick="OpenFarmerCreationForm" Variant="Variant.Outlined" Color="Color.Primary">
+                Create a Farmer
+            </MudButton>
+        </ToolBarContent>
+        <Columns>
+            <PropertyColumn Property="x => x.Id" Filterable="false" Grouping GroupBy="@_groupBy">
+                 <GroupTemplate>
+                     <span style="font-weight:bold">Farmer: @context.Grouping.Key  <MudChip Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small">total @context.Grouping.Count()</MudChip></span>
+                    </GroupTemplate>
+                </PropertyColumn>
+                <PropertyColumn Property="x => x.Product.Name" />
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="FarmerProduct" />
+            </PagerContent>
+        </MudDataGrid>
+}
+
+
+
+
+
+@code {
+    MudDataGrid<FarmerProduct> dataGrid;
+    bool _customizeGroupTemplate;
+    static bool _customizeGroupBy;
+    Func<FarmerProduct, object> _groupBy = x =>
+    {
+        // if (_customizeGroupBy)
+        //     return _nonmetals.Contains(x.Sign) ? "Nonmetal" : "Metal";
+
+        return x.Farmer.FirstName;
+    };
+
+    // private string GroupClassFunc(GroupDefinition<Product> item)
+    // {
+    //     return item.Grouping.Key?.ToString() == "Nonmetal" || item.Grouping.Key?.ToString() == "Other"
+    //             ? "mud-theme-warning"
+    //             : string.Empty;
+    // }
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     Elements = await httpClient.GetFromJsonAsync<List<Element>>("webapi/periodictable");
+    // }
+
+    void ExpandAllGroups()
+    {
+        dataGrid?.ExpandAllGroups();
+    }
+
+    void CollapseAllGroups()
+    {
+        dataGrid?.CollapseAllGroups();
+    }
+
+    void CustomizeByGroupChanged(bool isChecked)
+    {
+        _customizeGroupBy = isChecked;
+        dataGrid.GroupItems();
+    }
+
+    List<FarmerProduct> FarmerProducts = new List<FarmerProduct>();
+
+
+    // List<Product> products = new List<Product>();
+    // List<Admin> users = new List<Admin>();
+
+    // List<FarmerProduct> Farmers = new List<FarmerProduct>();
+
+    void AddFarmerProducts()
+    {
+        // for (int i = 0; i < 5; i++)
+        // {
+        // farmers.Add(new Farmer { Id = 1, Name = "User 1" });
+        FarmerProducts.Add(new FarmerProduct { Id = 1, Farmer = new Farmer { Id = 2, FirstName = "User 2" }, Product = new Product() { Id = 1, UserId = 1, Name = "Corn" } });
+        // }
+
+    }
+
+    void RemoveFarmerProducts()
+    {
+        FarmerProducts.Clear();
+    }
+
+    private void OpenFarmerCreationForm()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<FarmerForm>("Farmer Creation", options);
+    }
+
+}

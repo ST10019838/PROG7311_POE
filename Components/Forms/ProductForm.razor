@@ -1,0 +1,70 @@
+﻿@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+@using ST10019838_DamianDare_PROG7311_POE.Models
+@inject IDialogService DialogService
+
+
+
+
+<EditForm Model="@productForm" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <MudDialog>
+        <DialogContent>
+            <MudStack Spacing="4">
+                <MudTextField @bind-Value="productForm.Name" Label="Product Name" Required="true" For="(() => productForm.Name)" Clearable />
+
+
+                 <MudTextField @bind-Value="productForm.Description" Label="Description" For="(() => productForm.Description)"
+                                    Clearable AutoGrow MaxLines="3" />
+
+                 
+                 <MudSelect @bind-Value="productForm.Category" Label="Category" For="(() => productForm.Category)" Clearable>
+                    <!-- Need to fetch these  -->
+                    <MudSelectItem Value="@(new Category{Id = 1, Name = "boi"})" />
+                    <MudSelectItem Value="@(new Category{Id = 2, Name = "boi 2"})" />
+                    <MudSelectItem Value="@(new Category{Id = 3, Name = "boi 3"})" />
+                </MudSelect>
+
+                
+                
+                <MudStack Row="true">
+                    <MudNumericField @bind-Value="productForm.Price" Label="Price" For="(() => productForm.Price)" 
+                        Min="0" Step="1" Clearable />
+                  
+                    
+                     <MudNumericField @bind-Value="productForm.Quantity" Label="Quantity" For="(() => productForm.Quantity)"
+                                      Min="0" Step="1" Clearable />
+                </MudStack>
+
+             </MudStack>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="Cancel">Cancel</MudButton>
+            <MudButton Color="Color.Primary" ButtonType="ButtonType.Submit">Submit</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    bool isValid;
+    ProductFormModel productForm = new ProductFormModel();
+
+    void OnValidSubmit(EditContext context)
+    {
+        // context.Validate();
+        // isValid = true;
+        // StateHasChanged();
+
+        // Submit form
+
+        // MudDialog.Close(DialogResult.Ok(true));
+    }
+    void Cancel() => MudDialog.Cancel();
+}

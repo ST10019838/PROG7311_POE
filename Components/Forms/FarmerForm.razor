@@ -1,0 +1,109 @@
+﻿@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+@using ST10019838_DamianDare_PROG7311_POE.Models
+@inject IDialogService DialogService
+
+
+<EditForm Model="@farmerForm" OnValidSubmit="OnValidSubmit">
+<DataAnnotationsValidator />
+    <MudDialog>
+        <DialogContent>
+            <MudStack Spacing="4">
+                <MudTextField @bind-Value="farmerForm.FirstName" Label="First Name" For="(() => farmerForm.FirstName)"
+                              Required="true" Clearable />
+
+
+                <MudTextField @bind-Value="farmerForm.LastName" Label="Last Name" For="(() => farmerForm.LastName)"
+                               Required="true" Clearable />
+
+
+                <MudTextField @bind-Value="farmerForm.Email" Label="Email" For="(() => farmerForm.Email)"
+                               Required="true" Clearable />
+
+
+                <MudTextField @bind-Value="farmerForm.Password" Label="Password" For="(() => farmerForm.Password)"
+                              HelperText="Choose a strong password"
+                               InputType="PasswordInputType" Clearable
+                              Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon"
+                              OnAdornmentClick="ShowPassword" AdornmentAriaLabel="Show Password" />
+
+
+                <MudTextField @bind-Value="farmerForm.PasswordConfirmation" Label="Confirm Password"
+                              For="(() => farmerForm.PasswordConfirmation)"
+                               HelperText="Confirm Password" Clearable
+                              InputType="PasswordInputType"
+                              Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon"
+                              OnAdornmentClick="ShowPassword" AdornmentAriaLabel="Show Password" />
+            </MudStack>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="Cancel">Cancel</MudButton>
+            <MudButton Color="Color.Primary" ButtonType="ButtonType.Submit">Submit</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    bool isValid;
+
+    FarmerFormModel farmerForm = new FarmerFormModel();
+
+    void OnValidSubmit(EditContext context)
+    {
+        // context.Validate();
+        // isValid = true;
+        // StateHasChanged();
+
+        // Submit form
+
+        // MudDialog.Close(DialogResult.Ok(true));
+    }
+    void Cancel() => MudDialog.Cancel();
+
+    
+
+    private IEnumerable<string> PasswordStrength(string pw)
+    {
+        if (string.IsNullOrWhiteSpace(pw))
+        {
+            yield return "Password is required!";
+            yield break;
+        }
+        if (pw.Length < 8)
+            yield return "Password must be at least of length 8";
+        if (!Regex.IsMatch(pw, @"[A-Z]"))
+            yield return "Password must contain at least one capital letter";
+        if (!Regex.IsMatch(pw, @"[a-z]"))
+            yield return "Password must contain at least one lowercase letter";
+        if (!Regex.IsMatch(pw, @"[0-9]"))
+            yield return "Password must contain at least one digit";
+    }
+
+
+    bool showPassword;
+    InputType PasswordInputType = InputType.Password;
+    string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+    void ShowPassword()
+    {
+        @if (showPassword)
+        {
+            showPassword = false;
+            PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+            PasswordInputType = InputType.Password;
+        }
+        else
+        {
+            showPassword = true;
+            PasswordInputIcon = Icons.Material.Filled.Visibility;
+            PasswordInputType = InputType.Text;
+        }
+    }
+}
