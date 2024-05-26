@@ -22,30 +22,41 @@ public class FarmersEndpoints : ICarterModule
         //group.MapGet("module-code/uniqueness/{moduleCode}/{userId}", IsModuleCodeUnique);
     }
 
-    public static async Task<List<Farmer>> GetAllFarmers(AppDbContext db, int userId)
+    public static async Task<List<User>> GetAllFarmers(AppDbContext db)
     {
-        return await db.Farmers.ToListAsync();
+        return await db.Users.Where(u => u.Role == ROLE.FARMER).ToListAsync();
         //.OrderBy(m => m.Id)
         //.Where(m => m.Id == userId)
         //.ToListAsync();
 
     }
 
-    public static async Task<Farmer?> GetFarmer(AppDbContext db, int farmerId)
+    public static async Task<User?> GetFarmer(AppDbContext db, int farmerId)
     {
-        return await db.Farmers.FindAsync(farmerId);
+        return await db.Users.FindAsync(farmerId);
         //.OrderBy(m => m.Id)
         //.Where(m => m.Id == userId)
         //.ToListAsync();
 
     }
 
-    public static async Task<int> CreateFarmer(AppDbContext db /*, Module newModule */)
+    public static async Task<int> CreateFarmer(AppDbContext db, FarmerFormModel form)
     {
         // 1. First add then save the module
-        Farmer newFarmer = new Farmer() { Email = "Boi", FirstName = "Damian", LastName = "Dare", Password = "1234" };
+        User newFarmer = new User()
+        {
+            UserName = "DDare",
+            Email = form.Email,
+            FirstName = form.FirstName,
+            LastName = form.LastName,
+            Password = form.Password,
+            CreatedBy = 2,
+            Role = ROLE.FARMER
+        };
 
-        await db.Farmers.AddAsync(newFarmer);
+
+
+        await db.Users.AddAsync(newFarmer);
         return await db.SaveChangesAsync();
     }
 

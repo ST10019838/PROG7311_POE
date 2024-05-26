@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
 
-        public Farmer Farmer { get; set; } = null!;
+        public User Farmer { get; set; } = null!;
         public Product Product { get; set; } = null!;
     }
 }

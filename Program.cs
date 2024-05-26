@@ -1,8 +1,10 @@
+
 using Carter;
+using Kinde.Api.Models.Configuration;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
-using ST10019838_DamianDare_PROG7311_POE.Components;
 using ST10019838_DamianDare_PROG7311_POE.Models;
+using ST10019838_DamianDare_PROG7311_POE.Ui;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +13,8 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 
-builder.Services.AddControllers();
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -25,11 +28,36 @@ builder.Services.AddCors(options =>
          });
 });
 
+
+builder.Services.AddScoped(sp =>
+    new HttpClient
+    {
+        BaseAddress = new Uri(builder.Configuration["FrontendUrl"] ?? "https://localhost:3333")
+    });
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));
 
+
+builder.Services.AddHttpClient();
 builder.Services.AddMudServices();
 builder.Services.AddCarter();
+
+
+
+builder.Services.AddTransient<IAuthorizationConfigurationProvider, DefaultAuthorizationConfigurationProvider>();
+builder.Services.AddTransient<IApplicationConfigurationProvider, DefaultApplicationConfigurationProvider>();
+builder.Services.AddSession();
+
+
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(3600);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 
 
@@ -51,6 +79,9 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
+app.UseSession();
+
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
@@ -60,8 +91,8 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 app.UseCors();
-app.MapControllers();
 app.MapCarter();
 
+//app.Run();
 
 app.Run("https://localhost:3333");

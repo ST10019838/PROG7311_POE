@@ -4,6 +4,11 @@ namespace ST10019838_DamianDare_PROG7311_POE.Models
 {
     public class FarmerFormModel
     {
+        [Required(ErrorMessage = "User Name is required")]
+        [DataType(DataType.Text)]
+        [MaxLength(255, ErrorMessage = "Can't exceed 255 characters")]
+        public string UserName { get; set; } = null!;
+
         [Required(ErrorMessage = "First Name is required")]
         [DataType(DataType.Text)]
         [MaxLength(255, ErrorMessage = "Can't exceed 255 characters")]

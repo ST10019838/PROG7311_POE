@@ -1,39 +1,37 @@
 ﻿@using System.Text.RegularExpressions
 @using System.ComponentModel.DataAnnotations
 @using ST10019838_DamianDare_PROG7311_POE.Models
+@using static ST10019838_DamianDare_PROG7311_POE.Endpoints.ProductsEndpoints;
 @inject IDialogService DialogService
+@inject AppDbContext db
 
 
 
 
 <EditForm Model="@productForm" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
-    <MudDialog>
+    <MudDialog Style="width: 100%;">
         <DialogContent>
-            <MudStack Spacing="4">
-                <MudTextField @bind-Value="productForm.Name" Label="Product Name" Required="true" For="(() => productForm.Name)" Clearable />
+            <MudStack Spacing="4" Style="max-height: 400px; overflow-y: auto;">
+                <MudTextField @bind-Value="productForm.Name" Label="Product Name" Required="true"
+                              For="(() => productForm.Name)" Clearable Variant="Variant.Outlined" />
 
 
                  <MudTextField @bind-Value="productForm.Description" Label="Description" For="(() => productForm.Description)"
-                                    Clearable AutoGrow MaxLines="3" />
+                                    Clearable AutoGrow MaxLines="3" Variant="Variant.Outlined" />
 
-                 
-                 <MudSelect @bind-Value="productForm.Category" Label="Category" For="(() => productForm.Category)" Clearable>
-                    <!-- Need to fetch these  -->
-                    <MudSelectItem Value="@(new Category{Id = 1, Name = "boi"})" />
-                    <MudSelectItem Value="@(new Category{Id = 2, Name = "boi 2"})" />
-                    <MudSelectItem Value="@(new Category{Id = 3, Name = "boi 3"})" />
-                </MudSelect>
+
+                 <MudTextField @bind-Value="productForm.Category" Label="Category" For="(() => productForm.Category)" Clearable
+                                    AutoGrow MaxLines="3" Variant="Variant.Outlined" />
 
                 
-                
-                <MudStack Row="true">
-                    <MudNumericField @bind-Value="productForm.Price" Label="Price" For="(() => productForm.Price)" 
-                        Min="0" Step="1" Clearable />
+                 <MudStack Class="flex-sm-row">
+                    <MudNumericField @bind-Value="productForm.Price" Label="Price" For="(() => productForm.Price)"
+                                      Min="0" Step="1" Clearable Variant="Variant.Outlined" />
                   
                     
                      <MudNumericField @bind-Value="productForm.Quantity" Label="Quantity" For="(() => productForm.Quantity)"
-                                      Min="0" Step="1" Clearable />
+                                      Min="0" Step="1" Clearable Variant="Variant.Outlined" />
                 </MudStack>
 
              </MudStack>
@@ -48,7 +46,7 @@
 
 
 
-@code {
+ @code {
 
     [CascadingParameter]
     MudDialogInstance MudDialog { get; set; }
@@ -56,13 +54,14 @@
     bool isValid;
     ProductFormModel productForm = new ProductFormModel();
 
-    void OnValidSubmit(EditContext context)
+    async void OnValidSubmit(EditContext context)
     {
         // context.Validate();
         // isValid = true;
         // StateHasChanged();
 
         // Submit form
+        await CreateProduct(db, productForm);
 
         // MudDialog.Close(DialogResult.Ok(true));
     }

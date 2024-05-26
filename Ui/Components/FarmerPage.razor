@@ -1,7 +1,11 @@
 ﻿@using ST10019838_DamianDare_PROG7311_POE.Models
-@using ST10019838_DamianDare_PROG7311_POE.Components.Other
-@using ST10019838_DamianDare_PROG7311_POE.Components.Forms
+@using ST10019838_DamianDare_PROG7311_POE.Ui.Components
+@using ST10019838_DamianDare_PROG7311_POE.Ui.Forms
+@using static ST10019838_DamianDare_PROG7311_POE.Endpoints.ProductsEndpoints;
+@using static ST10019838_DamianDare_PROG7311_POE.Utils.Utils;
 @inject IDialogService DialogService
+@inject HttpClient http
+@inject AppDbContext db
 
 <!-- @if (/*userIsAdmin*/)
 {
@@ -28,24 +32,25 @@ GroupClassFunc="GroupClassFunc"
     <MudText>No products have been added yet</MudText>
 }
 else
-{
-    <MudDataGrid @ref="dataGrid" MultiSelection="true" Items="@Products" Filterable="true"
-                 Hideable="true" Groupable="true" GroupExpanded="false">
-        <ToolBarContent>
-            <MudText Typo="Typo.h6">Products</MudText>
-            <MudSpacer />
-            <MudButton @onclick="OpenProductCreationForm" Variant="Variant.Outlined" Color="Color.Primary">
-                Create a Product
-            </MudButton>
-        </ToolBarContent>
-        <Columns>
-            <PropertyColumn Property="x => x.Id" Filterable="false"/>
-            <PropertyColumn Property="x => x.Name" />
-            </Columns>
-            <PagerContent>
-                <MudDataGridPager T="Product" />
-            </PagerContent>
-        </MudDataGrid>
+{   
+    <MudTreeView T="string" ExpandOnClick Hover >
+        <MudStack Spacing="4">
+            @foreach (var product in Products)
+            {
+                <MudTreeViewItem Value="@($"Product {product.Id}: {ShortenString(product.Name)} ")">
+                    <MudStack Style="width: 100%;" Justify="Justify.Center" Class="flex-sm-row flex-wrap">
+                        <MudTreeViewItem Value="@($"Id: {product.Id}")" />
+                        <MudTreeViewItem Value="@($"Name: {product.Name}")" />
+                        <MudTreeViewItem Value="@($"Category: {product.Category}")" />
+                        <MudTreeViewItem Value="@($"Description: {product.Description}")" />
+                        <MudTreeViewItem Value="@($"Quantity: {product.Quantity}")" />
+                        <MudTreeViewItem Value="@($"Price: {product.Price}")" />
+                    </MudStack>
+                </MudTreeViewItem>
+            }
+        </MudStack>
+    </MudTreeView>
+
 }
 
 
@@ -56,6 +61,8 @@ else
     MudDataGrid<Product> dataGrid;
     bool _customizeGroupTemplate;
     static bool _customizeGroupBy;
+    List<Product> Products = new List<Product>();
+
     Func<FarmerProduct, object> _groupBy = x =>
     {
         // if (_customizeGroupBy)
@@ -63,6 +70,19 @@ else
 
         return x.Farmer.FirstName;
     };
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Products = await GetAllProducts(db);
+
+        Products = new List<Product>()
+        {
+            new Product(){Name = "beef", Price = 1800},
+            new Product(){Id = 1, Name = "corn sdfjlaksdjf lasjdf lasjdfl;asjdf lad;sj "}
+        };
+    }
 
     // private string GroupClassFunc(GroupDefinition<Product> item)
     // {
@@ -92,7 +112,7 @@ else
         dataGrid.GroupItems();
     }
 
-    List<Product> Products = new List<Product>();
+   
 
 
     // List<Product> products = new List<Product>();

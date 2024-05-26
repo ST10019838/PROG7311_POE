@@ -1,6 +1,7 @@
 ﻿@using ST10019838_DamianDare_PROG7311_POE.Models
-@using ST10019838_DamianDare_PROG7311_POE.Components.Other
-@using ST10019838_DamianDare_PROG7311_POE.Components.Forms
+@using ST10019838_DamianDare_PROG7311_POE.Ui.Components
+@using ST10019838_DamianDare_PROG7311_POE.Ui.Forms
+@using static ST10019838_DamianDare_PROG7311_POE.Endpoints.AuthEndpoints
 @inject IDialogService DialogService
 <!--  HttpClient httpClient 
      
@@ -11,7 +12,7 @@
 
 
 
-@if (/*userIsAdmin*/ true)
+@if (/*userIsAdmin*/ false)
 {
     <AdminPage />
 }

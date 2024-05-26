@@ -14,7 +14,9 @@ namespace ST10019838_DamianDare_PROG7311_POE.Models
         [MaxLength(255, ErrorMessage = "Can't exceed 255 characters")]
         public string? Description { get; set; }
 
-        public Category? Category { get; set; }
+        [DataType(DataType.Text)]
+        [MaxLength(255, ErrorMessage = "Can't exceed 255 characters")]
+        public string Category { get; set; }
 
 
         [Range(0, int.MaxValue, ErrorMessage = "Value must be greater than 0")]

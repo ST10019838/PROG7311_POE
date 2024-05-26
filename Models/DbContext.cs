@@ -4,8 +4,7 @@ namespace ST10019838_DamianDare_PROG7311_POE.Models
 {
     public class AppDbContext : DbContext
     {
-        public DbSet<Admin> Admins { get; set; }
-        public DbSet<Farmer> Farmers { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
 
 

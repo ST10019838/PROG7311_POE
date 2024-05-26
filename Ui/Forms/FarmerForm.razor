@@ -1,37 +1,43 @@
 ﻿@using System.Text.RegularExpressions
 @using System.ComponentModel.DataAnnotations
 @using ST10019838_DamianDare_PROG7311_POE.Models
+@using static ST10019838_DamianDare_PROG7311_POE.Endpoints.FarmersEndpoints;
 @inject IDialogService DialogService
+@inject AppDbContext db
 
 
 <EditForm Model="@farmerForm" OnValidSubmit="OnValidSubmit">
 <DataAnnotationsValidator />
-    <MudDialog>
+    <MudDialog >
         <DialogContent>
-            <MudStack Spacing="4">
-                <MudTextField @bind-Value="farmerForm.FirstName" Label="First Name" For="(() => farmerForm.FirstName)"
-                              Required="true" Clearable />
+            <MudStack Spacing="4" Style="max-height: 450px; overflow-y: auto; width: 100%;" Class="px-3">
+                <MudTextField @bind-Value="farmerForm.UserName" Label="User Name" For="(() => farmerForm.UserName)"
+                              Required Clearable Variant="Variant.Outlined" />
+                              o
+                 <MudStack Row="true" Spacing="3">
+                     <MudTextField @bind-Value="farmerForm.FirstName" Label="First Name" For="(() => farmerForm.FirstName)"
+                                   Required Clearable Variant="Variant.Outlined" />
 
 
-                <MudTextField @bind-Value="farmerForm.LastName" Label="Last Name" For="(() => farmerForm.LastName)"
-                               Required="true" Clearable />
-
+                     <MudTextField @bind-Value="farmerForm.LastName" Label="Last Name" For="(() => farmerForm.LastName)"
+                                   Required Clearable Variant="Variant.Outlined" />
+                 </MudStack>
 
                 <MudTextField @bind-Value="farmerForm.Email" Label="Email" For="(() => farmerForm.Email)"
-                               Required="true" Clearable />
+                               Required Clearable Variant="Variant.Outlined" />
 
 
                 <MudTextField @bind-Value="farmerForm.Password" Label="Password" For="(() => farmerForm.Password)"
-                              HelperText="Choose a strong password"
-                               InputType="PasswordInputType" Clearable
+                               Variant="Variant.Outlined"
+                               InputType="PasswordInputType" Clearable Required
                               Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon"
                               OnAdornmentClick="ShowPassword" AdornmentAriaLabel="Show Password" />
 
 
                 <MudTextField @bind-Value="farmerForm.PasswordConfirmation" Label="Confirm Password"
                               For="(() => farmerForm.PasswordConfirmation)"
-                               HelperText="Confirm Password" Clearable
-                              InputType="PasswordInputType"
+                               Clearable Required
+                               InputType="PasswordInputType" Variant="Variant.Outlined"
                               Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon"
                               OnAdornmentClick="ShowPassword" AdornmentAriaLabel="Show Password" />
             </MudStack>
@@ -46,7 +52,7 @@
 
 
 
-@code {
+ @code {
 
     [CascadingParameter]
     MudDialogInstance MudDialog { get; set; }
@@ -55,7 +61,7 @@
 
     FarmerFormModel farmerForm = new FarmerFormModel();
 
-    void OnValidSubmit(EditContext context)
+    async void OnValidSubmit(EditContext context)
     {
         // context.Validate();
         // isValid = true;
@@ -63,7 +69,13 @@
 
         // Submit form
 
-        // MudDialog.Close(DialogResult.Ok(true));
+        // 
+
+
+        await CreateFarmer(db, farmerForm);
+
+        MudDialog.Close(DialogResult.Ok(true));
+
     }
     void Cancel() => MudDialog.Cancel();
 
