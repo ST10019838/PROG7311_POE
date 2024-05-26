@@ -10,13 +10,9 @@ public class FarmersEndpoints : ICarterModule
     {
         var group = app.MapGroup("api/farmers");
 
-        group.MapGet("{userId}", GetAllModulesFor);
-
-        //group.MapPost("add", AddFarmer);
-
-        group.MapGet("", GetAdmins);
-        group.MapGet("add", AddAdmin);
-
+        group.MapGet("", GetAllFarmers);
+        group.MapGet("{farmerId}", GetFarmer);
+        group.MapPost("create", CreateFarmer);
 
 
         //group.MapGet("is-empty/{userId}", HasEmptyModuleStorageFor);
@@ -26,7 +22,7 @@ public class FarmersEndpoints : ICarterModule
         //group.MapGet("module-code/uniqueness/{moduleCode}/{userId}", IsModuleCodeUnique);
     }
 
-    public static async Task<List<Farmer>> GetAllModulesFor(AppDbContext db, int userId)
+    public static async Task<List<Farmer>> GetAllFarmers(AppDbContext db, int userId)
     {
         return await db.Farmers.ToListAsync();
         //.OrderBy(m => m.Id)
@@ -35,21 +31,21 @@ public class FarmersEndpoints : ICarterModule
 
     }
 
-    public static async Task<List<Admin>> GetAdmins(AppDbContext db /*, int userId */)
+    public static async Task<Farmer?> GetFarmer(AppDbContext db, int farmerId)
     {
-        return await db.Admins.ToListAsync();
+        return await db.Farmers.FindAsync(farmerId);
         //.OrderBy(m => m.Id)
         //.Where(m => m.Id == userId)
         //.ToListAsync();
 
     }
 
-    public static async Task<int> AddAdmin(AppDbContext db /*, Module newModule */)
+    public static async Task<int> CreateFarmer(AppDbContext db /*, Module newModule */)
     {
         // 1. First add then save the module
-        Admin newAdmin = new Admin() { Email = "Boi", FirstName = "Damian", LastName = "Dare", Password = "1234" };
+        Farmer newFarmer = new Farmer() { Email = "Boi", FirstName = "Damian", LastName = "Dare", Password = "1234" };
 
-        await db.Admins.AddAsync(newAdmin);
+        await db.Farmers.AddAsync(newFarmer);
         return await db.SaveChangesAsync();
     }
 
