@@ -4,8 +4,6 @@
     {
         public static string ShortenString(string s)
         {
-
-
             return s.Length < 8 ? s : $"{s.Substring(0, 8)} ...";
         }
     }

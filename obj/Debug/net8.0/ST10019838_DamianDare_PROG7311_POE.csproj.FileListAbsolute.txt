@@ -263,7 +263,6 @@ H:\Year 3\Semester 1\PROG7311 - Programming 3A\POE\Repo\ST10019838_DamianDare_PR
 H:\Year 3\Semester 1\PROG7311 - Programming 3A\POE\Repo\ST10019838_DamianDare_PROG7311_POE\obj\Debug\net8.0\staticwebassets.pack.json
 H:\Year 3\Semester 1\PROG7311 - Programming 3A\POE\Repo\ST10019838_DamianDare_PROG7311_POE\obj\Debug\net8.0\scopedcss\bundle\ST10019838_DamianDare_PROG7311_POE.styles.css
 H:\Year 3\Semester 1\PROG7311 - Programming 3A\POE\Repo\ST10019838_DamianDare_PROG7311_POE\obj\Debug\net8.0\scopedcss\projectbundle\ST10019838_DamianDare_PROG7311_POE.bundle.scp.css
-H:\Year 3\Semester 1\PROG7311 - Programming 3A\POE\Repo\ST10019838_DamianDare_PROG7311_POE\obj\Debug\net8.0\ST10019838_DamianDare_PROG7311_POE.csproj.CopyComplete
 H:\Year 3\Semester 1\PROG7311 - Programming 3A\POE\Repo\ST10019838_DamianDare_PROG7311_POE\obj\Debug\net8.0\ST10019838_DamianDare_PROG7311_POE.dll
 H:\Year 3\Semester 1\PROG7311 - Programming 3A\POE\Repo\ST10019838_DamianDare_PROG7311_POE\obj\Debug\net8.0\refint\ST10019838_DamianDare_PROG7311_POE.dll
 H:\Year 3\Semester 1\PROG7311 - Programming 3A\POE\Repo\ST10019838_DamianDare_PROG7311_POE\obj\Debug\net8.0\ST10019838_DamianDare_PROG7311_POE.pdb
@@ -274,3 +273,4 @@ H:\Year 3\Semester 1\PROG7311 - Programming 3A\POE\Repo\ST10019838_DamianDare_PR
 H:\Year 3\Semester 1\PROG7311 - Programming 3A\POE\Repo\ST10019838_DamianDare_PROG7311_POE\bin\Debug\net8.0\JsonSubTypes.dll
 H:\Year 3\Semester 1\PROG7311 - Programming 3A\POE\Repo\ST10019838_DamianDare_PROG7311_POE\bin\Debug\net8.0\Kinde.Api.dll
 H:\Year 3\Semester 1\PROG7311 - Programming 3A\POE\Repo\ST10019838_DamianDare_PROG7311_POE\bin\Debug\net8.0\Polly.dll
+H:\Year 3\Semester 1\PROG7311 - Programming 3A\POE\Repo\ST10019838_DamianDare_PROG7311_POE\obj\Debug\net8.0\ST100198.062CE456.Up2Date
