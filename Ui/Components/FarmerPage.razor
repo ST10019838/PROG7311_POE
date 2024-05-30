@@ -12,25 +12,28 @@
 
 
 
-<MudStack Spacing="2">
-    <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+<MudStack Spacing="2" Style="width: 100%;">
+    <MudStack Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="d-flex flex-sm-row">
         <MudText Typo="Typo.h5">Products</MudText>
 
-        <MudStack Row AlignItems="AlignItems.Center" Spacing="6">
-            <MudButton StartIcon="@Icons.Material.Filled.FilterAlt"
-                       Variant="( isFilterOpen ? Variant.Filled : Variant.Outlined )"
+        <MudStack Row AlignItems="AlignItems.Center" Spacing="6" Class="d-flex flex-row">
+            <MudButton StartIcon="@filterIcon"
+                       Variant="(isFilterOpen ? Variant.Filled : Variant.Outlined )"
                        OnClick="OpenFilter" DisableElevation>
                 Filter
             </MudButton>
-            <MudButton Variant="Variant.Outlined">Add Product</MudButton>
+            <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.PostAdd"
+                       OnClick="OpenProductCreationForm">
+                Add Product
+            </MudButton>
         </MudStack>
      </MudStack>
 
 
-    <MudCollapse Expanded="isFilterOpen">
-        <MudStack Row AlignItems="AlignItems.Center" Class="mb-2">
+    <MudCollapse Expanded="isFilterOpen" Style="width: 100%;">
+        <MudStack AlignItems="AlignItems.Center" Class="mb-2 d-flex flex-md-row" Style="width: 100%;">
             <MudSelect @bind-Value="fieldToFilter" Label="Field" Variant="Variant.Outlined"
-                AnchorOrigin="Origin.BottomCenter" Style="height: 100%;">
+                AnchorOrigin="Origin.BottomCenter" Style="width: 100%;">
                 <MudSelectItem T="FilterableField" Value="FilterableField.PRODUCT_TYPE">Product Type</MudSelectItem>
                 <MudSelectItem T="FilterableField" Value="FilterableField.PRODUCTION_DATE">Production Date</MudSelectItem>
             </MudSelect>
@@ -41,14 +44,16 @@
                     <MudTextField @bind-Value="Search" Placeholder="Value" Variant="Variant.Outlined"
                                   Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Abc"
                                   Clearable OnClearButtonClick="FilterProducts"
-                                  OnKeyUp="FilterProducts" Immediate />
+                                  OnKeyUp="FilterProducts" Immediate FullWidth />
 
                     break;
                 case FilterableField.PRODUCTION_DATE:
                     <MudDatePicker Label="Start Date" Date="StartDate" Variant="Variant.Outlined"
-                                   Clearable DateChanged="((d) => DateChanged(d as DateTime?))" />
+                                   Clearable DateChanged="((d) => DateChanged(d as DateTime?))" Style="width: 100%"
+                                   AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.CenterCenter" />
                     <MudDatePicker Label="End Date" Date="EndDate" Variant="Variant.Outlined" MinDate="StartDate"
-                                   Clearable DateChanged="((d) => DateChanged(d as DateTime?, true))" />
+                                   Clearable DateChanged="((d) => DateChanged(d as DateTime?, true))" 
+                                   AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.CenterCenter" />
                     break;
             }
             
@@ -57,9 +62,15 @@
 
     <MudDivider Style="width: 80%;" Class="mx-auto mb-2" />
 
-    <MudTreeView T="string" ExpandOnClick Hover>
-        <MudStack Spacing="4" Style="max-height: 600px; overflow-y: auto;">
-            @if (!Products.Any())
+
+
+    <MudTreeView T="string" ExpandOnClick Hover MaxHeight="500px" Width="100%" Class="overflow-y-auto">
+            @if (isLoading){
+                <MudStack Row Justify="Justify.Center" >
+                    <MudProgressCircular Color="Color.Default" Indeterminate="true" Class="mx-auto"  />
+                </MudStack>
+            }
+            else if (!Products.Any())
             {
                 <MudText Typo="Typo.h6">No products have been added yet</MudText>
             }
@@ -71,19 +82,85 @@
             {
                 @foreach (var product in ProductsToDisplay)
                 {
-                    <MudTreeViewItem Value="@($"Product {product.Id}: {ShortenString(product.Name)} ")">
-                        <MudStack Style="width: 100%;" Justify="Justify.Center" Class="flex-sm-row flex-wrap">
-                            <MudTreeViewItem Value="@($"Id: {product.Id}")" />
-                            <MudTreeViewItem Value="@($"Name: {product.Name}")" />
-                            <MudTreeViewItem Value="@($"Category: {product.Category}")" />
-                            <MudTreeViewItem Value="@($"Description: {product.Description}")" />
-                            <MudTreeViewItem Value="@($"Quantity: {product.Quantity}")" />
-                            <MudTreeViewItem Value="@($"Price: {product.Price}")" />
+                    <MudTreeViewItem Value="@($"Product {product.Id}: {ShortenString(product.Name)} ")" Class="mb-7">
+                        <MudStack Style="width: 100%;" Justify="Justify.SpaceEvenly" Class="flex-sm-row flex-wrap gap-16"
+                            Spacing="0" >
+                            <MudStack>
+                                <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                                    <MudText Typo="Typo.subtitle2">Date Created</MudText>
+                                    <MudPaper Class="pa-5 overflow-auto" Outlined MaxWidth="150px" MaxHeight="75px">
+                                    <MudText Typo="Typo.body1" Align="Align.Justify" Style="word-wrap:break-word;">@product.DateCreated.ToShortDateString()</MudText>
+                                    </MudPaper>
+                                </MudStack>
+
+                                <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                                    <MudText Typo="Typo.subtitle2">Production Date</MudText>
+                                    <MudPaper Class="pa-5 overflow-auto" Outlined MaxWidth="150px" MaxHeight="75px">
+                                    <MudText Typo="Typo.body1" Align="Align.Justify" Style="word-wrap:break-word;"
+                                    >@product.ProductionDate?.ToShortDateString()
+                                    </MudText>
+                                    </MudPaper>
+                                </MudStack>
+                            </MudStack>
+
+
+                            <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                                <MudText Typo="Typo.subtitle2">Name</MudText>
+                            <MudPaper Class="pa-5 overflow-auto" Outlined Width="150px" Height="150px">
+                                <MudText Typo="Typo.body1" Align="Align.Justify" Style="word-wrap:break-word;">@product.Name</MudText>
+                                </MudPaper>
+                            </MudStack>
+
+
+                            <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                                <MudText Typo="Typo.subtitle2">Description</MudText>
+                                <MudPaper Class="pa-5 overflow-auto" Outlined Width="150px" Height="150px">
+                                <MudText Typo="Typo.body1" Align="Align.Justify" Style="word-wrap:break-word;">@product.Description</MudText>
+                                </MudPaper>
+                            </MudStack>
+
+                            <MudStack>
+                                <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                                    <MudText Typo="Typo.subtitle2">Type</MudText>
+                                    <MudPaper Class="pa-5 overflow-auto" Outlined MaxWidth="150px" MaxHeight="75px">
+                                    <MudText Typo="Typo.body1" Align="Align.Justify" Style="word-wrap:break-word;">
+                                        @product.Type</MudText>
+                                    </MudPaper>
+                                </MudStack>
+
+                                <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                                    <MudText Typo="Typo.subtitle2">Category</MudText>
+
+                                    <MudPaper Class="pa-5 overflow-auto" Outlined MaxWidth="150px" MaxHeight="75px">
+                                    <MudText Typo="Typo.body1" Align="Align.Justify" Style="word-wrap:break-word;">@product.Category</MudText>
+                                    </MudPaper>
+                                </MudStack>
+                            </MudStack>
+                            
+
+                            <MudStack>
+                                <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                                    <MudText Typo="Typo.subtitle2">Price</MudText>
+                                    <MudPaper Class="pa-5 overflow-auto" Outlined MaxWidth="150px" MaxHeight="75px">
+                                    <MudText Typo="Typo.body1" Align="Align.Justify" Style="word-wrap:break-word;">@product.Price</MudText>
+                                    </MudPaper>
+                                </MudStack>
+
+                                <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                                    <MudText Typo="Typo.subtitle2">Quantity</MudText>
+                                    <MudPaper Class="pa-5 overflow-auto" Outlined MaxWidth="150px" MaxHeight="75px">
+                                    <MudText Typo="Typo.body1" Align="Align.Justify" Style="word-wrap:break-word;">@product.Quantity</MudText>
+                                    </MudPaper>
+                                </MudStack>
+                            </MudStack>
+                            
+                            
+
                         </MudStack>
                     </MudTreeViewItem>
                 }
             }
-        </MudStack>
+        
     </MudTreeView>
 
 </MudStack>
@@ -92,6 +169,25 @@
 
 
 @code {
+
+    bool isLoading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isLoading = true;
+        Products = await GetAllProducts(db);
+
+        Products = new List<Product>()
+        {
+            new Product(){Name = "beef", Price = 1800, Category = "FOOD", ProductionDate = DateTime.Now, Type="YOLOsadfasdfasdfasdfasdfasdf ksaljdf lasd j"},
+            new Product(){Id = 1, Name = "corn veryverylonglverylong sdfjlaksdjf lasjdf lasjdfl;asjdflad;sjaslkdfjaklsjlkasjdflkaj lksajd flasjdf askdjf lkasj lkasjdf lkajsdlf; ajsdlf ajs;dlf jasldkfj alsdjf; lsakdjf ;aslkdjf ;lsajdf laskjdf lajs;ldf jas;dlfk j "}
+        };
+
+        ProductsToDisplay = Products;
+        isLoading = false;
+    }
+
+
     DateTime? StartDate { get; set; }
     DateTime? EndDate { get; set; }
 
@@ -112,10 +208,12 @@
     }
 
     bool isFilterOpen = false;
+    string filterIcon = Icons.Material.Filled.FilterAlt;
 
     void OpenFilter()
     {
         isFilterOpen = !isFilterOpen;
+        filterIcon = isFilterOpen ? Icons.Material.Filled.FilterAltOff : Icons.Material.Filled.FilterAlt;
     }
 
     FilterableField fieldToFilter;
@@ -161,18 +259,7 @@
     }
 
 
-    protected override async Task OnInitializedAsync()
-    {
-        // Products = await GetAllProducts(db);
-
-        Products = new List<Product>()
-        {
-            new Product(){Name = "beef", Price = 1800, Category = "FOOD", ProductionDate = DateTime.Now, Type="YOLO"},
-            new Product(){Id = 1, Name = "corn sdfjlaksdjf lasjdf lasjdfl;asjdf lad;sj ", ProductionDate = DateTime.Now}
-        };
-
-        ProductsToDisplay = Products;
-    }
+    
 
 
     // protected override async Task OnInitializedAsync()
