@@ -9,14 +9,22 @@ namespace ST10019838_DamianDare_PROG7311_POE.Models
         [MaxLength(255, ErrorMessage = "Can't exceed 255 characters")]
         public string Name { get; set; } = null!;
 
+        [DataType(DataType.DateTime)]
+        public DateTime? ProductionDate { get; set; }
+
 
         [DataType(DataType.MultilineText)]
         [MaxLength(255, ErrorMessage = "Can't exceed 255 characters")]
         public string? Description { get; set; }
 
+
         [DataType(DataType.Text)]
         [MaxLength(255, ErrorMessage = "Can't exceed 255 characters")]
-        public string Category { get; set; }
+        public string? Type { get; set; }
+
+        [DataType(DataType.Text)]
+        [MaxLength(255, ErrorMessage = "Can't exceed 255 characters")]
+        public string? Category { get; set; }
 
 
         [Range(0, int.MaxValue, ErrorMessage = "Value must be greater than 0")]

@@ -13,7 +13,7 @@
             <MudStack Spacing="4" Style="max-height: 450px; overflow-y: auto; width: 100%;" Class="px-3">
                 <MudTextField @bind-Value="farmerForm.UserName" Label="User Name" For="(() => farmerForm.UserName)"
                               Required Clearable Variant="Variant.Outlined" />
-                              o
+                              
                  <MudStack Row="true" Spacing="3">
                      <MudTextField @bind-Value="farmerForm.FirstName" Label="First Name" For="(() => farmerForm.FirstName)"
                                    Required Clearable Variant="Variant.Outlined" />
@@ -44,7 +44,13 @@
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton Color="Color.Primary" ButtonType="ButtonType.Submit">Submit</MudButton>
+            <MudButton Color="Color.Primary" ButtonType="ButtonType.Submit" Disabled="isSubmitting">
+                @if (isSubmitting)
+                {
+                    <MudProgressCircular Class="ms-n1 me-2" Size="Size.Small" Indeterminate="true" />
+                }
+                SUBMIT
+            </MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>
@@ -61,6 +67,7 @@
 
     FarmerFormModel farmerForm = new FarmerFormModel();
 
+    bool isSubmitting = false;
     async void OnValidSubmit(EditContext context)
     {
         // context.Validate();
@@ -71,32 +78,15 @@
 
         // 
 
-
+        isSubmitting = true;
         await CreateFarmer(db, farmerForm);
 
+        isSubmitting = false;
         MudDialog.Close(DialogResult.Ok(true));
 
+        
     }
     void Cancel() => MudDialog.Cancel();
-
-    
-
-    private IEnumerable<string> PasswordStrength(string pw)
-    {
-        if (string.IsNullOrWhiteSpace(pw))
-        {
-            yield return "Password is required!";
-            yield break;
-        }
-        if (pw.Length < 8)
-            yield return "Password must be at least of length 8";
-        if (!Regex.IsMatch(pw, @"[A-Z]"))
-            yield return "Password must contain at least one capital letter";
-        if (!Regex.IsMatch(pw, @"[a-z]"))
-            yield return "Password must contain at least one lowercase letter";
-        if (!Regex.IsMatch(pw, @"[0-9]"))
-            yield return "Password must contain at least one digit";
-    }
 
 
     bool showPassword;

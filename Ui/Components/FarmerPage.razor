@@ -41,7 +41,7 @@
             @switch(fieldToFilter)
             {
                 case FilterableField.PRODUCT_TYPE:
-                    <MudTextField @bind-Value="Search" Placeholder="Value" Variant="Variant.Outlined"
+                    <MudTextField @bind-Value="FilterValue" Placeholder="Value" Variant="Variant.Outlined"
                                   Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Abc"
                                   Clearable OnClearButtonClick="FilterProducts"
                                   OnKeyUp="FilterProducts" Immediate FullWidth />
@@ -76,88 +76,13 @@
             }
             else if (!ProductsToDisplay.Any())
             {
-                <MudText Typo="Typo.h6">The product you searched for doesn't exist</MudText>
+                <MudText Typo="Typo.h6">The product you searched for does not exist</MudText>
             }
             else
             {
                 @foreach (var product in ProductsToDisplay)
                 {
-                    <MudTreeViewItem Value="@($"Product {product.Id}: {ShortenString(product.Name)} ")" Class="mb-7">
-                        <MudStack Style="width: 100%;" Justify="Justify.SpaceEvenly" Class="flex-sm-row flex-wrap gap-16"
-                            Spacing="0" >
-                            <MudStack>
-                                <MudStack AlignItems="AlignItems.Center" Spacing="0">
-                                    <MudText Typo="Typo.subtitle2">Date Created</MudText>
-                                    <MudPaper Class="pa-5 overflow-auto" Outlined MaxWidth="150px" MaxHeight="75px">
-                                    <MudText Typo="Typo.body1" Align="Align.Justify" Style="word-wrap:break-word;">@product.DateCreated.ToShortDateString()</MudText>
-                                    </MudPaper>
-                                </MudStack>
-
-                                <MudStack AlignItems="AlignItems.Center" Spacing="0">
-                                    <MudText Typo="Typo.subtitle2">Production Date</MudText>
-                                    <MudPaper Class="pa-5 overflow-auto" Outlined MaxWidth="150px" MaxHeight="75px">
-                                    <MudText Typo="Typo.body1" Align="Align.Justify" Style="word-wrap:break-word;"
-                                    >@product.ProductionDate?.ToShortDateString()
-                                    </MudText>
-                                    </MudPaper>
-                                </MudStack>
-                            </MudStack>
-
-
-                            <MudStack AlignItems="AlignItems.Center" Spacing="0">
-                                <MudText Typo="Typo.subtitle2">Name</MudText>
-                            <MudPaper Class="pa-5 overflow-auto" Outlined Width="150px" Height="150px">
-                                <MudText Typo="Typo.body1" Align="Align.Justify" Style="word-wrap:break-word;">@product.Name</MudText>
-                                </MudPaper>
-                            </MudStack>
-
-
-                            <MudStack AlignItems="AlignItems.Center" Spacing="0">
-                                <MudText Typo="Typo.subtitle2">Description</MudText>
-                                <MudPaper Class="pa-5 overflow-auto" Outlined Width="150px" Height="150px">
-                                <MudText Typo="Typo.body1" Align="Align.Justify" Style="word-wrap:break-word;">@product.Description</MudText>
-                                </MudPaper>
-                            </MudStack>
-
-                            <MudStack>
-                                <MudStack AlignItems="AlignItems.Center" Spacing="0">
-                                    <MudText Typo="Typo.subtitle2">Type</MudText>
-                                    <MudPaper Class="pa-5 overflow-auto" Outlined MaxWidth="150px" MaxHeight="75px">
-                                    <MudText Typo="Typo.body1" Align="Align.Justify" Style="word-wrap:break-word;">
-                                        @product.Type</MudText>
-                                    </MudPaper>
-                                </MudStack>
-
-                                <MudStack AlignItems="AlignItems.Center" Spacing="0">
-                                    <MudText Typo="Typo.subtitle2">Category</MudText>
-
-                                    <MudPaper Class="pa-5 overflow-auto" Outlined MaxWidth="150px" MaxHeight="75px">
-                                    <MudText Typo="Typo.body1" Align="Align.Justify" Style="word-wrap:break-word;">@product.Category</MudText>
-                                    </MudPaper>
-                                </MudStack>
-                            </MudStack>
-                            
-
-                            <MudStack>
-                                <MudStack AlignItems="AlignItems.Center" Spacing="0">
-                                    <MudText Typo="Typo.subtitle2">Price</MudText>
-                                    <MudPaper Class="pa-5 overflow-auto" Outlined MaxWidth="150px" MaxHeight="75px">
-                                    <MudText Typo="Typo.body1" Align="Align.Justify" Style="word-wrap:break-word;">@product.Price</MudText>
-                                    </MudPaper>
-                                </MudStack>
-
-                                <MudStack AlignItems="AlignItems.Center" Spacing="0">
-                                    <MudText Typo="Typo.subtitle2">Quantity</MudText>
-                                    <MudPaper Class="pa-5 overflow-auto" Outlined MaxWidth="150px" MaxHeight="75px">
-                                    <MudText Typo="Typo.body1" Align="Align.Justify" Style="word-wrap:break-word;">@product.Quantity</MudText>
-                                    </MudPaper>
-                                </MudStack>
-                            </MudStack>
-                            
-                            
-
-                        </MudStack>
-                    </MudTreeViewItem>
+                    <ProductTreeViewItem product="@product" />
                 }
             }
         
@@ -169,8 +94,19 @@
 
 
 @code {
-
     bool isLoading = false;
+
+    bool isFilterOpen = false;
+    string filterIcon = Icons.Material.Filled.FilterAlt;
+
+    public string? FilterValue = null;
+    DateTime? StartDate { get; set; }
+    DateTime? EndDate { get; set; }
+
+    List<Product> Products = new List<Product>();
+    List<Product> ProductsToDisplay = new List<Product>();
+    FilterableField fieldToFilter;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -188,8 +124,11 @@
     }
 
 
-    DateTime? StartDate { get; set; }
-    DateTime? EndDate { get; set; }
+    void OpenFilter()
+    {
+        isFilterOpen = !isFilterOpen;
+        filterIcon = isFilterOpen ? Icons.Material.Filled.FilterAltOff : Icons.Material.Filled.FilterAlt;
+    }
 
 
     void DateChanged(DateTime? newDate, bool endDateChanged = false)
@@ -207,26 +146,11 @@
         FilterProducts();
     }
 
-    bool isFilterOpen = false;
-    string filterIcon = Icons.Material.Filled.FilterAlt;
-
-    void OpenFilter()
-    {
-        isFilterOpen = !isFilterOpen;
-        filterIcon = isFilterOpen ? Icons.Material.Filled.FilterAltOff : Icons.Material.Filled.FilterAlt;
-    }
-
-    FilterableField fieldToFilter;
-
-
-    List<Product> Products = new List<Product>();
-    public string? Search = null;
-    List<Product> ProductsToDisplay = new List<Product>();
 
 
     private void FilterProducts()
     {
-        if (fieldToFilter == FilterableField.PRODUCT_TYPE && (Search is null || Search.Equals(string.Empty))  
+        if (fieldToFilter == FilterableField.PRODUCT_TYPE && (FilterValue is null || FilterValue.Equals(string.Empty))
             || fieldToFilter == FilterableField.PRODUCTION_DATE && (!StartDate.HasValue && !EndDate.HasValue)
         )
         {
@@ -238,7 +162,7 @@
         ProductsToDisplay = fieldToFilter switch
         {
             FilterableField.PRODUCT_TYPE =>
-            Products.Where(p => p.Type?.ToLower().Contains(Search.ToLower()) ?? false).ToList(),
+            Products.Where(p => p.Type?.ToLower().Contains(FilterValue.ToLower()) ?? false).ToList(),
 
             FilterableField.PRODUCTION_DATE =>
                 StartDate.HasValue && EndDate.HasValue ?
@@ -252,29 +176,11 @@
                 : Products.Where(p => p.ProductionDate != null && 
                         DateTime.Compare(p.ProductionDate.Value.Date, EndDate.Value.Date) <= 0).ToList(),
 
-            _ => Products.Where(p => p.Name.ToLower().Contains(Search.ToLower())).ToList()
+            _ => Products.Where(p => p.Name.ToLower().Contains(FilterValue.ToLower())).ToList()
         };
 
         StateHasChanged();
     }
-
-
-    
-
-
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     Elements = await httpClient.GetFromJsonAsync<List<Element>>("webapi/periodictable");
-    // }
-
-   
-
-
-    // List<Product> products = new List<Product>();
-    // List<Admin> users = new List<Admin>();
-
-    // List<FarmerProduct> Farmers = new List<FarmerProduct>();
-
 
     private void OpenProductCreationForm()
     {

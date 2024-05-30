@@ -13,7 +13,7 @@
         public DateTime? ProductionDate { get; set; }
         public DateTime DateCreated { get; set; }
 
-        public int FarmerId { get; set; }
+        public int UserId { get; set; }
         public User User { get; set; } = null!;
     }
 }

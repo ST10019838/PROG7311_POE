@@ -1,167 +1,289 @@
 ﻿@using ST10019838_DamianDare_PROG7311_POE.Models
 @using ST10019838_DamianDare_PROG7311_POE.Ui.Components
 @using ST10019838_DamianDare_PROG7311_POE.Ui.Forms
-@using static ST10019838_DamianDare_PROG7311_POE.Endpoints.EmployeesEndpoints;
+@using static ST10019838_DamianDare_PROG7311_POE.Endpoints.FarmersEndpoints;
+@using static ST10019838_DamianDare_PROG7311_POE.Utils.Utils;
+
+@using System.Diagnostics;
 @inject IDialogService DialogService
 @inject HttpClient http
 @inject AppDbContext db
 
 
-<!-- @if (/*userIsAdmin*/)
-{
 
-} -->
-<!--<div class="overflow-y-scroll">
-@if (products.Count == 0)
-{
-        <MudText>No products have been added yet</MudText>
-}
-else
-{
-@foreach (Product product in products)
-{
-            <MudText>@product.Name</MudText>
-};
-}
-</div>
 
-GroupClassFunc="GroupClassFunc"
--->
-@if (/*farmers.Count == 0*/ false)
-{
-    <MudText>No farmers have been added yet</MudText>
-}
-else
-{
-    <MudDataGrid @ref="dataGrid" MultiSelection="true" Items="@FarmerProducts" Filterable="true"
-                 Hideable="true" Groupable="true" GroupExpanded="false">
-        <ToolBarContent>
-            <MudText Typo="Typo.h6">Farmers and their Products</MudText>
-            <MudSpacer />
-            <MudButton @onclick="OpenFarmerCreationForm" Variant="Variant.Outlined" Color="Color.Primary">
-                Create a Farmer
+<MudStack Spacing="2" Style="width: 100%;">
+    <MudStack Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="d-flex flex-sm-row">
+        <MudText Typo="Typo.h5">Farmers & Products</MudText>
+
+        <MudStack Row AlignItems="AlignItems.Center" Spacing="6" Class="d-flex flex-row">
+            <MudButton StartIcon="@filterIcon"
+                       Variant="(isFilterOpen ? Variant.Filled : Variant.Outlined )"
+                       OnClick="OpenFilter" DisableElevation>
+                Filter Products
             </MudButton>
-        </ToolBarContent>
-        <Columns>
-            <PropertyColumn Property="x => x.Id" Filterable="false" Grouping GroupBy="@_groupBy">
-                 <GroupTemplate>
-                     <span style="font-weight:bold">Farmer: @context.Grouping.Key  <MudChip Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small">total @context.Grouping.Count()</MudChip></span>
-                    </GroupTemplate>
-                </PropertyColumn>
-                <PropertyColumn Property="x => x.Product.Name" />
-            </Columns>
-            <PagerContent>
-                <MudDataGridPager T="FarmerProduct" />
-            </PagerContent>
-        </MudDataGrid>
+            <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.PostAdd"
+                       OnClick="OpenFarmerCreationForm">
+                Add Farmer
+            </MudButton>
+        </MudStack>
+    </MudStack>
 
 
-    <MudTreeView T="FarmerProduct">
-        @foreach(var item in FarmerProducts)
+    <MudCollapse Expanded="isFilterOpen" Style="width: 100%;">
+        <MudStack AlignItems="AlignItems.Center" Class="mb-2 d-flex flex-md-row" Style="width: 100%;">
+            <MudSelect @bind-Value="fieldToFilter" Label="Field" Variant="Variant.Outlined"
+                       AnchorOrigin="Origin.BottomCenter" Style="width: 100%;">
+                <MudSelectItem T="FilterableField" Value="FilterableField.PRODUCT_TYPE">Product Type</MudSelectItem>
+                <MudSelectItem T="FilterableField" Value="FilterableField.PRODUCTION_DATE">Production Date</MudSelectItem>
+            </MudSelect>
+
+            @switch (fieldToFilter)
+            {
+                case FilterableField.PRODUCT_TYPE:
+                    <MudTextField @bind-Value="FilterValue" Placeholder="Value" Variant="Variant.Outlined"
+                                  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Abc"
+                                  Clearable OnClearButtonClick="FilterFarmerProducts"
+                                  OnKeyUp="FilterFarmerProducts" Immediate FullWidth />
+
+                    break;
+                case FilterableField.PRODUCTION_DATE:
+                    <MudDatePicker Label="Start Date" Date="StartDate" Variant="Variant.Outlined"
+                                   Clearable DateChanged="((d) => DateChanged(d as DateTime?))" Style="width: 100%"
+                                   AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.CenterCenter" />
+                    <MudDatePicker Label="End Date" Date="EndDate" Variant="Variant.Outlined" MinDate="StartDate"
+                                   Clearable DateChanged="((d) => DateChanged(d as DateTime?, true))"
+                                   AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.CenterCenter" />
+                    break;
+            }
+
+        </MudStack>
+    </MudCollapse>
+
+    <MudDivider Style="width: 80%;" Class="mx-auto mb-2" />
+
+
+
+
+    <MudTreeView T="string" ExpandOnClick Hover MaxHeight="500px" Width="100%" Class="overflow-y-auto">
+        @if (isLoading)
         {
-            <MudTreeViewItem Value="@(item.Farmer.UserName)">
-                <MudTreeViewItem Value="@(item.Farmer.Products)">
-                @foreach(var product in item.Farmer.Products)
+            <MudStack Row Justify="Justify.Center">
+                <MudProgressCircular Color="Color.Default" Indeterminate="true" Class="mx-auto" />
+            </MudStack>
+        }
+        else if (!Farmers.Any())
+        {
+            <MudText Typo="Typo.h6">No farmers have been added yet</MudText>
+        }
+        else if (!FarmersToDisplay.Any())
+        {
+            <MudText Typo="Typo.h6">The farmers and their products you searched for do not exist</MudText>
+        }
+        else
+        {
+            @foreach (var farmer in FarmersToDisplay)
+            {
+                <MudTreeViewItem Value="@($"Farmer {farmer.Id}: {ShortenString(farmer.UserName)} ")" Class="mb-7">
+
+                @if (farmer.Products.Any())
                 {
-                    <MudTreeViewItem Value="@("Avatar")" />
-                    <MudTreeViewItem Value="@("Button")" />
+                    @foreach(var product in farmer.Products)
+                    {
+                        <ProductTreeViewItem product="@product" />
+                    }
+                }
+                else
+                {
+                    <MudText Typo="Typo.h6">No products have been added to this farmer yet</MudText>
                 }
                 </MudTreeViewItem>
-            </MudTreeViewItem>
+            }
         }
+
     </MudTreeView>
-}
-
-@if(isLoading){
-    <MudProgressCircular Color="Color.Info" Indeterminate="true" />
-}
-else
-{
-    
-}
-
+</MudStack>
 
 
 
 
 @code {
-    MudDataGrid<FarmerProduct> dataGrid;
-    List<FarmerProduct> FarmerProducts = new List<FarmerProduct>();
+    bool isLoading = false;
 
-    bool _customizeGroupTemplate;
-    static bool _customizeGroupBy;
-    Func<FarmerProduct, object> _groupBy = x =>
-    {
-        // if (_customizeGroupBy)
-        //     return _nonmetals.Contains(x.Sign) ? "Nonmetal" : "Metal";
+    bool isFilterOpen = false;
+    string filterIcon = Icons.Material.Filled.FilterAlt;
 
-        return x.Farmer.FirstName;
-    };
+    public string? FilterValue = null;
+    DateTime? StartDate { get; set; }
+    DateTime? EndDate { get; set; }
 
+    List<User> Farmers = new List<User>();
+    List<User> FarmersToDisplay = new List<User>();
+    FilterableField fieldToFilter;
 
-    bool isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
+        isLoading = true;
+        Farmers = await GetAllFarmers(db);
+
+        User testUser = new User()
+            {
+                Id = 1,
+                UserName = "BOI"
+            };
+
+        testUser.Products.Add(new Product()
+            {
+                Name = "beef",
+                Price = 1800,
+                Category = "FOOD",
+                ProductionDate = DateTime.Now,
+                Type = "YOLOsadfasdfasdfasdfasdfasdf ksaljdf lasd j"
+            });
+
+        testUser.Products.Add(
+                     new Product() { Id = 1, Name = "corn veryverylonglverylong sdfjlaksdjf lasjdf lasjdfl;asjdflad;sjaslkdfjaklsjlkasjdflkaj lksajd flasjdf askdjf lkasj lkasjdf lkajsdlf; ajsdlf ajs;dlf jasldkfj alsdjf; lsakdjf ;aslkdjf ;lsajdf laskjdf lajs;ldf jas;dlfk j " }
+        );
+
+        Farmers = new List<User>()
+        {
+            testUser
+        };
         
+        
+
+        FarmersToDisplay = Farmers;
         isLoading = false;
     }
 
-    // private string GroupClassFunc(GroupDefinition<Product> item)
-    // {
-    //     return item.Grouping.Key?.ToString() == "Nonmetal" || item.Grouping.Key?.ToString() == "Other"
-    //             ? "mud-theme-warning"
-    //             : string.Empty;
-    // }
 
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     Elements = await httpClient.GetFromJsonAsync<List<Element>>("webapi/periodictable");
-    // }
-
-    void ExpandAllGroups()
+    void OpenFilter()
     {
-        dataGrid?.ExpandAllGroups();
+        isFilterOpen = !isFilterOpen;
+        filterIcon = isFilterOpen ? Icons.Material.Filled.FilterAltOff : Icons.Material.Filled.FilterAlt;
     }
 
-    void CollapseAllGroups()
+
+    void DateChanged(DateTime? newDate, bool endDateChanged = false)
     {
-        dataGrid?.CollapseAllGroups();
+        if (endDateChanged)
+        {
+            EndDate = newDate;
+        }
+        else
+        {
+            EndDate = null;
+            StartDate = newDate;
+        }
+
+        FilterFarmerProducts();
     }
 
-    void CustomizeByGroupChanged(bool isChecked)
+
+
+    private void FilterFarmerProducts()
     {
-        _customizeGroupBy = isChecked;
-        dataGrid.GroupItems();
+        if (fieldToFilter == FilterableField.PRODUCT_TYPE && (FilterValue is null || FilterValue.Equals(string.Empty))
+            || fieldToFilter == FilterableField.PRODUCTION_DATE && (!StartDate.HasValue && !EndDate.HasValue)
+        )
+        {
+            FarmersToDisplay = Farmers;
+            return;
+        }
+
+
+        FarmersToDisplay = fieldToFilter switch
+        {
+            FilterableField.PRODUCT_TYPE => FilterFarmerProductsByType(),
+
+
+            FilterableField.PRODUCTION_DATE => FilterFarmerProductsByDate(),
+
+
+            _ => FilterFarmerProductsByType()
+        };
+
+        StateHasChanged();
     }
 
-    
 
-
-    // List<Product> products = new List<Product>();
-    // List<Admin> users = new List<Admin>();
-
-    // List<FarmerProduct> Farmers = new List<FarmerProduct>();
-
-    void AddFarmerProducts()
-    {
-        // for (int i = 0; i < 5; i++)
-        // {
-        // farmers.Add(new Farmer { Id = 1, Name = "User 1" });
-        FarmerProducts.Add(new FarmerProduct { Id = 1, Farmer = new User { Id = 2, FirstName = "User 2" }, Product = new Product() { Id = 1, FarmerId = 1, Name = "Corn" } });
-        // }
-
-    }
-
-    void RemoveFarmerProducts()
-    {
-        FarmerProducts.Clear();
-    }
 
     private void OpenFarmerCreationForm()
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<FarmerForm>("Farmer Creation", options);
+        DialogService.Show<FarmerForm>("Farmer Creation");
     }
 
+
+    private List<User> FilterFarmerProductsByType()
+    {
+        List<User> farmersToDisplay = new List<User>();
+
+        foreach(User farmer in Farmers)
+        {
+            if (!farmer.Products.Any()) continue;
+
+            User newFarmer = farmer.DeepCopyWithEmptyProducts();
+
+            foreach(Product product in farmer?.Products)
+            {
+                if (product.Type?.ToLower().Contains(FilterValue.ToLower()) ?? false)
+                    newFarmer.Products.Add(product);
+            }
+
+            if (newFarmer.Products.Any()) farmersToDisplay.Add(newFarmer);
+        }
+
+        return farmersToDisplay;
+
+        //  Farmers.Where(f => f.Products?.Where(p =>
+        // p.Type?.ToLower().Contains(FilterValue.ToLower()) ?? false
+        // ).ToList() ?? false
+        // ).ToList();
+    }
+
+    private List<User> FilterFarmerProductsByDate()
+    {
+        List<User> farmersToDisplay = new List<User>();
+
+        foreach (User farmer in Farmers)
+        {
+            if (!farmer.Products.Any()) continue;
+
+            User newFarmer = farmer.DeepCopyWithEmptyProducts();
+
+            foreach (Product product in farmer?.Products)
+            {
+                if (StartDate.HasValue && EndDate.HasValue)
+                {
+                    if (product.ProductionDate != null &&
+                                        DateTime.Compare(product.ProductionDate.Value.Date, StartDate.Value.Date) >= 0 &&
+                                        DateTime.Compare(product.ProductionDate.Value.Date, EndDate.Value.Date) <= 0)
+                        newFarmer.Products.Add(product);
+                }
+                else if (StartDate.HasValue)
+                {
+                    if (product.ProductionDate != null &&
+                                        DateTime.Compare(product.ProductionDate.Value.Date, StartDate.Value.Date) >= 0)
+                        newFarmer.Products.Add(product);
+                }
+                else
+                {
+                   if(product.ProductionDate != null &&
+                                         DateTime.Compare(product.ProductionDate.Value.Date, EndDate.Value.Date) <= 0)
+                        newFarmer.Products.Add(product);
+                }
+            }
+
+            if (newFarmer.Products.Any()) farmersToDisplay.Add(newFarmer);
+        }
+
+        return farmersToDisplay;
+
+        //  Farmers.Where(f => f.Products?.Where(p =>
+        // p.Type?.ToLower().Contains(FilterValue.ToLower()) ?? false
+        // ).ToList() ?? false
+        // ).ToList();
+    }
 }
+

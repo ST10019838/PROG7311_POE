@@ -50,10 +50,15 @@ public class ProductsEndpoints : ICarterModule
         Product newProduct = new Product()
         {
             Name = form.Name,
+            Type = form.Type,
             Category = form.Category,
             Description = form.Description,
             Price = form.Price,
             Quantity = form.Quantity,
+            ProductionDate = form.ProductionDate,
+            DateCreated = DateTime.Now,
+            // Add user
+            //UserId = 1
         };
 
         await db.Products.AddAsync(newProduct);

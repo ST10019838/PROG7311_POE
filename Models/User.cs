@@ -18,6 +18,29 @@
         //public DateTime CreatedAt { get; set; }
         //public DateTime LastUpdated
         //public User LastUpdatedBy
+
+
+        // The following function was adapted from GeeksForGeeks.com
+        // Author: Sabya_S
+        // Link: https://www.geeksforgeeks.org/shallow-copy-and-deep-copy-in-c-sharp/
+        public User DeepCopyWithEmptyProducts()
+        {
+            User copy = new User()
+            {
+                Id = this.Id,
+                UserName = this.UserName,
+                Email = this.Email,
+                Password = this.Password,
+                FirstName = this.FirstName,
+                LastName = this.LastName,
+                Role = this.Role,
+                CreatedBy = this.CreatedBy,
+            };
+
+            copy.Products.Clear();
+
+            return copy;
+        }
     }
 
     public enum ROLE

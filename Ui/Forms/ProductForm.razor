@@ -13,32 +13,48 @@
     <MudDialog Style="width: 100%;">
         <DialogContent>
             <MudStack Spacing="4" Style="max-height: 400px; overflow-y: auto;">
-                <MudTextField @bind-Value="productForm.Name" Label="Product Name" Required="true"
-                              For="(() => productForm.Name)" Clearable Variant="Variant.Outlined" />
+                <MudStack Class="d-flex flex-sm-row gap-2" Justify="Justify.Center">
+                    <MudTextField @bind-Value="productForm.Name" Label="Name" Required="true" Immediate
+                                  For="(() => productForm.Name)" Clearable Variant="Variant.Outlined" />
+
+                    <MudDatePicker @bind-Value="productForm.ProductionDate" Label="Production Date"
+                                  For="(() => productForm.ProductionDate)" Clearable Variant="Variant.Outlined" />
+                </MudStack>
+                
 
 
                  <MudTextField @bind-Value="productForm.Description" Label="Description" For="(() => productForm.Description)"
-                                    Clearable AutoGrow MaxLines="3" Variant="Variant.Outlined" />
+                              Clearable AutoGrow MaxLines="3" Variant="Variant.Outlined" Immediate />
 
+                <MudStack Class="flex-sm-row">
+                    <MudTextField @bind-Value="productForm.Type" Label="Type" For="(() => productForm.Type)" Clearable
+                                  AutoGrow MaxLines="3" Variant="Variant.Outlined" Immediate />
 
-                 <MudTextField @bind-Value="productForm.Category" Label="Category" For="(() => productForm.Category)" Clearable
-                                    AutoGrow MaxLines="3" Variant="Variant.Outlined" />
-
+                    <MudTextField @bind-Value="productForm.Category" Label="Category" For="(() => productForm.Category)" Clearable
+                                  AutoGrow MaxLines="3" Variant="Variant.Outlined" Immediate />
+                </MudStack>
                 
                  <MudStack Class="flex-sm-row">
                     <MudNumericField @bind-Value="productForm.Price" Label="Price" For="(() => productForm.Price)"
-                                      Min="0" Step="1" Clearable Variant="Variant.Outlined" />
+                                     Min="0" Step="1" Clearable Variant="Variant.Outlined" Immediate />
                   
                     
                      <MudNumericField @bind-Value="productForm.Quantity" Label="Quantity" For="(() => productForm.Quantity)"
-                                      Min="0" Step="1" Clearable Variant="Variant.Outlined" />
+                                     Min="0" Step="1" Clearable Variant="Variant.Outlined" Immediate />
                 </MudStack>
 
              </MudStack>
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton Color="Color.Primary" ButtonType="ButtonType.Submit">Submit</MudButton>
+            <MudButton Color="Color.Primary" ButtonType="ButtonType.Submit" Disabled="isSubmitting">
+                @if (isSubmitting)
+                {
+                    <MudProgressCircular Class="ms-n1 me-2" Size="Size.Small" Indeterminate="true" />
+
+                }
+                SUBMIT
+                </MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>
@@ -46,7 +62,7 @@
 
 
 
- @code {
+@code {
 
     [CascadingParameter]
     MudDialogInstance MudDialog { get; set; }
@@ -54,16 +70,20 @@
     bool isValid;
     ProductFormModel productForm = new ProductFormModel();
 
+    bool isSubmitting = false;
     async void OnValidSubmit(EditContext context)
     {
         // context.Validate();
         // isValid = true;
         // StateHasChanged();
 
+        isSubmitting = true;
         // Submit form
         await CreateProduct(db, productForm);
 
-        // MudDialog.Close(DialogResult.Ok(true));
+        isSubmitting = false;
+        MudDialog.Close(DialogResult.Ok(true));
     }
+
     void Cancel() => MudDialog.Cancel();
 }
