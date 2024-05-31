@@ -13,27 +13,27 @@ public class ProductsEndpoints : ICarterModule
         var group = app.MapGroup("api/products");
 
         group.MapGet("", GetAllProducts);
-        group.MapGet("{productId}", GetProduct);
+        //group.MapGet("{productId}", GetProduct);
         group.MapPost("create", CreateProduct);
     }
 
-    public static async Task<List<Product>> GetAllProducts(AppDbContext db)
+    public static async Task<List<Product>> GetAllProducts(AppDbContext db, HttpClient http, string user_id)
     {
-        return await db.Products.ToListAsync();
+        return await db.Products.Where(p => p.User_Id.Equals(user_id)).ToListAsync();
         //.OrderBy(m => m.Id)
         //.Where(m => m.Id == userId)
         //.ToListAsync();
     }
 
-    public static async Task<Product?> GetProduct(AppDbContext db, int productId)
-    {
-        return await db.Products.FindAsync(productId);
-        //.OrderBy(m => m.Id)
-        //.Where(m => m.Id == userId)
-        //.ToListAsync();
-    }
+    //public static async Task<Product?> GetProduct(AppDbContext db, int productId)
+    //{
+    //    return await db.Products.FindAsync(productId);
+    //    //.OrderBy(m => m.Id)
+    //    //.Where(m => m.Id == userId)
+    //    //.ToListAsync();
+    //}
 
-    public static async Task<IResult> CreateProduct(AppDbContext db, ProductFormModel form /* farmerId */)
+    public static async Task<IResult> CreateProduct(AppDbContext db, ProductFormModel form, string user_id)
     {
         // 1. First add then save the module
         bool isValid = Validator.TryValidateObject(form,
@@ -58,7 +58,7 @@ public class ProductsEndpoints : ICarterModule
             ProductionDate = form.ProductionDate,
             DateCreated = DateTime.Now,
             // Add user
-            //UserId = 1
+            User_Id = user_id
         };
 
         await db.Products.AddAsync(newProduct);

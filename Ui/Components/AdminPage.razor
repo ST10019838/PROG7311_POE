@@ -84,7 +84,7 @@
         {
             @foreach (var farmer in FarmersToDisplay)
             {
-                <MudTreeViewItem Value="@($"Farmer {farmer.Id}: {ShortenString(farmer.UserName)} ")" Class="mb-7">
+                <MudTreeViewItem Value="@($"Farmer {farmer.Information.User_id} | {farmer.Information.Email} | {ShortenString(farmer.Information.Name ?? "")} ")" Class="mb-7">
 
                 @if (farmer.Products.Any())
                 {
@@ -102,7 +102,9 @@
         }
 
     </MudTreeView>
+
 </MudStack>
+
 
 
 
@@ -117,45 +119,27 @@
     DateTime? StartDate { get; set; }
     DateTime? EndDate { get; set; }
 
-    List<User> Farmers = new List<User>();
-    List<User> FarmersToDisplay = new List<User>();
+    List<Farmer>? Farmers = new List<Farmer>();
+
+    List<Farmer> FarmersToDisplay = new List<Farmer>();
     FilterableField fieldToFilter;
 
 
     protected override async Task OnInitializedAsync()
     {
         isLoading = true;
-        Farmers = await GetAllFarmers(db);
 
-        User testUser = new User()
-            {
-                Id = 1,
-                UserName = "BOI"
-            };
+        await FetchData();
 
-        testUser.Products.Add(new Product()
-            {
-                Name = "beef",
-                Price = 1800,
-                Category = "FOOD",
-                ProductionDate = DateTime.Now,
-                Type = "YOLOsadfasdfasdfasdfasdfasdf ksaljdf lasd j"
-            });
-
-        testUser.Products.Add(
-                     new Product() { Id = 1, Name = "corn veryverylonglverylong sdfjlaksdjf lasjdf lasjdfl;asjdflad;sjaslkdfjaklsjlkasjdflkaj lksajd flasjdf askdjf lkasj lkasjdf lkajsdlf; ajsdlf ajs;dlf jasldkfj alsdjf; lsakdjf ;aslkdjf ;lsajdf laskjdf lajs;ldf jas;dlfk j " }
-        );
-
-        Farmers = new List<User>()
-        {
-            testUser
-        };
-        
-        
-
-        FarmersToDisplay = Farmers;
         isLoading = false;
     }
+
+    async Task FetchData()
+    {
+        Farmers = await GetAllFarmers(db, http);
+        FarmersToDisplay = Farmers;
+    }
+
 
 
     void OpenFilter()
@@ -207,23 +191,29 @@
         StateHasChanged();
     }
 
-
-
-    private void OpenFarmerCreationForm()
+    private async void OpenFarmerCreationForm()
     {
-        DialogService.Show<FarmerForm>("Farmer Creation");
+        var dialog = DialogService.Show<FarmerForm>("Farmer Creation");
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await FetchData();
+            StateHasChanged();
+        }
+
     }
 
 
-    private List<User> FilterFarmerProductsByType()
+    private List<Farmer> FilterFarmerProductsByType()
     {
-        List<User> farmersToDisplay = new List<User>();
+        List<Farmer> farmersToDisplay = new List<Farmer>();
 
-        foreach(User farmer in Farmers)
+        foreach (Farmer farmer in Farmers)
         {
             if (!farmer.Products.Any()) continue;
 
-            User newFarmer = farmer.DeepCopyWithEmptyProducts();
+            Farmer newFarmer = farmer.DeepCopyWithEmptyProducts();
 
             foreach(Product product in farmer?.Products)
             {
@@ -242,15 +232,15 @@
         // ).ToList();
     }
 
-    private List<User> FilterFarmerProductsByDate()
+    private List<Farmer> FilterFarmerProductsByDate()
     {
-        List<User> farmersToDisplay = new List<User>();
+        List<Farmer> farmersToDisplay = new List<Farmer>();
 
-        foreach (User farmer in Farmers)
+        foreach (Farmer farmer in Farmers)
         {
             if (!farmer.Products.Any()) continue;
 
-            User newFarmer = farmer.DeepCopyWithEmptyProducts();
+            Farmer newFarmer = farmer.DeepCopyWithEmptyProducts();
 
             foreach (Product product in farmer?.Products)
             {

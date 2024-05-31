@@ -20,14 +20,8 @@
 <MudLayout>
     <MudAppBar Color="Color.Info">
         <MudStack Row="true" Justify="Justify.SpaceAround" Style="width: 100%">
-            <MudLink Color="Color.Primary">Home</MudLink>
+            <MudLink Color="Color.Primary">Agri-Energy Connect</MudLink>
 
-            @if (/*userIsAdmin*/ true)
-            {
-                <MudLink>Admin</MudLink>
-            }
-
-            <MudButton Variant="Variant.Filled" OnClick="LoginWith">Login</MudButton>
             <Login />
         </MudStack>
     </MudAppBar>
@@ -43,7 +37,5 @@
 
 
 @code{
-    async void LoginWith(){
-        
-    }
+
 }

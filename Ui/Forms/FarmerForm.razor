@@ -2,8 +2,14 @@
 @using System.ComponentModel.DataAnnotations
 @using ST10019838_DamianDare_PROG7311_POE.Models
 @using static ST10019838_DamianDare_PROG7311_POE.Endpoints.FarmersEndpoints;
+@using static ST10019838_DamianDare_PROG7311_POE.Utils.Utils;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+@using System.Diagnostics;
+
 @inject IDialogService DialogService
 @inject AppDbContext db
+@inject HttpClient http
 
 
 <EditForm Model="@farmerForm" OnValidSubmit="OnValidSubmit">
@@ -12,23 +18,23 @@
         <DialogContent>
             <MudStack Spacing="4" Style="max-height: 450px; overflow-y: auto; width: 100%;" Class="px-3">
                 <MudTextField @bind-Value="farmerForm.UserName" Label="User Name" For="(() => farmerForm.UserName)"
-                              Required Clearable Variant="Variant.Outlined" />
+                              Required Clearable Variant="Variant.Outlined" Immediate />
                               
                  <MudStack Row="true" Spacing="3">
                      <MudTextField @bind-Value="farmerForm.FirstName" Label="First Name" For="(() => farmerForm.FirstName)"
-                                   Required Clearable Variant="Variant.Outlined" />
+                                  Required Clearable Variant="Variant.Outlined" Immediate />
 
 
                      <MudTextField @bind-Value="farmerForm.LastName" Label="Last Name" For="(() => farmerForm.LastName)"
-                                   Required Clearable Variant="Variant.Outlined" />
+                                  Required Clearable Variant="Variant.Outlined" Immediate />
                  </MudStack>
 
                 <MudTextField @bind-Value="farmerForm.Email" Label="Email" For="(() => farmerForm.Email)"
-                               Required Clearable Variant="Variant.Outlined" />
+                              Required Clearable Variant="Variant.Outlined" Immediate />
 
 
                 <MudTextField @bind-Value="farmerForm.Password" Label="Password" For="(() => farmerForm.Password)"
-                               Variant="Variant.Outlined"
+                              Variant="Variant.Outlined" Immediate
                                InputType="PasswordInputType" Clearable Required
                               Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon"
                               OnAdornmentClick="ShowPassword" AdornmentAriaLabel="Show Password" />
@@ -36,11 +42,13 @@
 
                 <MudTextField @bind-Value="farmerForm.PasswordConfirmation" Label="Confirm Password"
                               For="(() => farmerForm.PasswordConfirmation)"
-                               Clearable Required
+                              Clearable Required Immediate
                                InputType="PasswordInputType" Variant="Variant.Outlined"
                               Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon"
                               OnAdornmentClick="ShowPassword" AdornmentAriaLabel="Show Password" />
             </MudStack>
+
+            <MudText Color="Color.Error">@ErrorMessage</MudText>
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -58,7 +66,7 @@
 
 
 
- @code {
+@code {
 
     [CascadingParameter]
     MudDialogInstance MudDialog { get; set; }
@@ -66,6 +74,7 @@
     bool isValid;
 
     FarmerFormModel farmerForm = new FarmerFormModel();
+    string ErrorMessage { get; set; }
 
     bool isSubmitting = false;
     async void OnValidSubmit(EditContext context)
@@ -79,13 +88,22 @@
         // 
 
         isSubmitting = true;
-        await CreateFarmer(db, farmerForm);
+        var creationResponse = await CreateFarmer(db, http, farmerForm);
+
+        if (!creationResponse.IsSuccessStatusCode)
+        {
+            var jsonData = await ReadJsonFromHttpResponseAsync(creationResponse);
+            ErrorMessage = jsonData["message"].Value<string>();
+            isSubmitting = false;
+            StateHasChanged();
+            return;
+        }
+
 
         isSubmitting = false;
         MudDialog.Close(DialogResult.Ok(true));
-
-        
     }
+
     void Cancel() => MudDialog.Cancel();
 
 

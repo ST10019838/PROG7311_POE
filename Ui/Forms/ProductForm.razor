@@ -67,6 +67,9 @@
     [CascadingParameter]
     MudDialogInstance MudDialog { get; set; }
 
+    [Parameter]
+    public string UserId { get; set; }
+
     bool isValid;
     ProductFormModel productForm = new ProductFormModel();
 
@@ -79,7 +82,7 @@
 
         isSubmitting = true;
         // Submit form
-        await CreateProduct(db, productForm);
+        await CreateProduct(db, productForm, UserId);
 
         isSubmitting = false;
         MudDialog.Close(DialogResult.Ok(true));

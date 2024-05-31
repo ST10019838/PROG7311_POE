@@ -87,7 +87,6 @@
             }
         
     </MudTreeView>
-
 </MudStack>
 
 
@@ -111,16 +110,34 @@
     protected override async Task OnInitializedAsync()
     {
         isLoading = true;
-        Products = await GetAllProducts(db);
 
-        Products = new List<Product>()
+
+
+        if (authenticationState is not null)
         {
-            new Product(){Name = "beef", Price = 1800, Category = "FOOD", ProductionDate = DateTime.Now, Type="YOLOsadfasdfasdfasdfasdfasdf ksaljdf lasd j"},
-            new Product(){Id = 1, Name = "corn veryverylonglverylong sdfjlaksdjf lasjdf lasjdfl;asjdflad;sjaslkdfjaklsjlkasjdflkaj lksajd flasjdf askdjf lkasj lkasjdf lkajsdlf; ajsdlf ajs;dlf jasldkfj alsdjf; lsakdjf ;aslkdjf ;lsajdf laskjdf lajs;ldf jas;dlfk j "}
-        };
+            var state = await authenticationState;
+            Username = state?.User?.Identity?.Name ?? string.Empty;
+            var Claims = state?.User?.Claims;
 
-        ProductsToDisplay = Products;
+            UserId = Claims.Single(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").Value;
+
+
+
+        }
+
         isLoading = false;
+    }
+
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+    private string Username = "";
+    string UserId { get; set; }
+
+    async Task FetchData()
+    {
+        Products = await GetAllProducts(db, http, UserId);
+        ProductsToDisplay = Products;
     }
 
 
@@ -182,8 +199,20 @@
         StateHasChanged();
     }
 
-    private void OpenProductCreationForm()
+
+    private async void OpenProductCreationForm()
     {
-        DialogService.Show<ProductForm>("Product Creation");
+        // The following way of passing parameters was adapted from stackoverflow
+        // Author: ru_cosmonaut
+        // Link: https://stackoverflow.com/questions/72519518/mudblazor-how-to-pass-a-function-as-a-modal-parameter
+        var dialog = DialogService.Show<ProductForm>("Product Creation", 
+            parameters: new DialogParameters(){ ["UserId"] = UserId });
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await FetchData();
+            StateHasChanged();
+        }
     }
 }

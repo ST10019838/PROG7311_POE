@@ -9,17 +9,17 @@ public class EmployeesEndpoints : ICarterModule
     {
         var group = app.MapGroup("api/employees");
 
-        group.MapGet("{adminId}", GetEmployee);
+        //group.MapGet("{adminId}", GetEmployee);
         group.MapPost("create", CreateEmployee);
     }
 
-    public static async Task<User?> GetEmployee(AppDbContext db, int adminId)
-    {
-        return await db.Users.FindAsync(adminId);
-        //.OrderBy(m => m.Id)
-        //.Where(m => m.Id == userId)
-        //.ToListAsync();
-    }
+    //public static async Task<User?> GetEmployee(AppDbContext db, int adminId)
+    //{
+    //    return await db.Users.FindAsync(adminId);
+    //    //.OrderBy(m => m.Id)
+    //    //.Where(m => m.Id == userId)
+    //    //.ToListAsync();
+    //}
 
     public static async Task<int> CreateEmployee(AppDbContext db /*, Module newModule */)
     {
@@ -34,7 +34,7 @@ public class EmployeesEndpoints : ICarterModule
             Role = ROLE.EMPLOYEE
         };
 
-        await db.Users.AddAsync(newEmployee);
+        //await db.Users.AddAsync(newEmployee);
         return await db.SaveChangesAsync();
     }
 }
