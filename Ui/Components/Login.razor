@@ -1,0 +1,43 @@
+﻿<AuthorizeView>
+    <Authorized>
+        <MudMenu AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter" DisableElevation>
+            <ActivatorContent>
+                <MudAvatar Variant="Variant.Outlined">
+                    <MudImage Src="@(UserPicture)" />
+                </MudAvatar>
+            </ActivatorContent>
+            <ChildContent>
+                <MudMenuItem Disabled>Profile</MudMenuItem>
+                <MudDivider />
+                <MudMenuItem>
+                    <MudLink Href="/Account/Logout">
+                        Sign Out
+                    </MudLink>
+                </MudMenuItem>
+            </ChildContent>
+        </MudMenu>
+    </Authorized>
+    <!-- <NotAuthorized>
+        <MudLink Class="mud-theme-info" Href="api/auth/login">Log in</MudLink>
+    </NotAuthorized> -->
+</AuthorizeView>
+
+
+
+@code{
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+
+    string UserPicture { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (authenticationState is not null)
+        {
+            var state = await authenticationState;
+            var Claims = state?.User?.Claims;
+
+            UserPicture = Claims.Single(c => c.Type == "picture").Value;
+        }
+    }
+}

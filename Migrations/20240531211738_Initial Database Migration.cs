@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -31,6 +30,12 @@ namespace ST10019838_DamianDare_PROG7311_POE.Migrations
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
                 });
+
+            migrationBuilder.Sql("INSERT INTO Products (Name, Type, Category, Description, Price, Quantity, ProductionDate, DateCreated, User_Id )" +
+                "VALUES ('Beef', 'Food', 'Meat', 'Just some consumable food', 18, 200, GETDATE(), GETDATE(), 'auth0|665a3b6b0d4f202d25d6b45a');");
+
+            migrationBuilder.Sql("INSERT INTO Products (Name, Type, Category, Description, Price, Quantity, ProductionDate, DateCreated, User_Id )" +
+                "VALUES ('Corn', 'Food', 'Vegetable', 'Just some more consumable food', 10, 500, GETDATE(), GETDATE(), 'auth0|665a3b6b0d4f202d25d6b45a');");
         }
 
         /// <inheritdoc />

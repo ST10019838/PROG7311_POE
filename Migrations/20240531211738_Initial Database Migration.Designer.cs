@@ -12,7 +12,7 @@ using ST10019838_DamianDare_PROG7311_POE.Models;
 namespace ST10019838_DamianDare_PROG7311_POE.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240531111826_Initial Database Migration")]
+    [Migration("20240531211738_Initial Database Migration")]
     partial class InitialDatabaseMigration
     {
         /// <inheritdoc />

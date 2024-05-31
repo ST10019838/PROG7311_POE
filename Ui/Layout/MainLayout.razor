@@ -1,5 +1,6 @@
 ﻿@using static ST10019838_DamianDare_PROG7311_POE.Endpoints.AuthEndpoints;
 @using ST10019838_DamianDare_PROG7311_POE.Ui.Pages;
+@using ST10019838_DamianDare_PROG7311_POE.Ui.Components;
 @inherits LayoutComponentBase
 @inject HttpClient http
 
@@ -18,9 +19,9 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar Color="Color.Info">
-        <MudStack Row="true" Justify="Justify.SpaceAround" Style="width: 100%">
-            <MudLink Color="Color.Primary">Agri-Energy Connect</MudLink>
+    <MudAppBar Elevation="0" Class="mud-transparent">
+        <MudStack Row="true" Justify="Justify.SpaceAround" AlignItems="AlignItems.Center" Style="width: 100%">
+            <MudLink Color="Color.Info" Typo="Typo.h6">Agri-Energy Connect</MudLink>
 
             <Login />
         </MudStack>

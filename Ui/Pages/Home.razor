@@ -3,15 +3,16 @@
 @using ST10019838_DamianDare_PROG7311_POE.Ui.Forms
 @using static ST10019838_DamianDare_PROG7311_POE.Endpoints.AuthEndpoints
 @inject IDialogService DialogService
-<!--  HttpClient httpClient 
-     
- GroupClassFunc="GroupClassFunc" -->
+@inject HttpClient http
+
+
+@attribute [Authorize]
 
 @page "/"
 <PageTitle>Home</PageTitle>
 
 
-@if (/*userIsAdmin*/ true)
+@if (Role.Equals("Employee"))
 {
     <AdminPage />
 }
@@ -23,6 +24,20 @@ else
 
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+    string Role { get; set; } = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (authenticationState is not null)
+        {
+            var state = await authenticationState;
+            string user_id = state?.User?.Claims.Single(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").Value;
+            Role = await GetUsersRole(http, user_id);
+        }
+    }
+
 
     private void OpenDialog()
     {

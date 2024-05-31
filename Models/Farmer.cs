@@ -14,7 +14,7 @@
             Farmer copy = new Farmer()
             {
                 Information = this.Information,
-                Products = this.Products,
+                Products = this.Products.ToList(),
             };
 
             copy.Products.Clear();

@@ -19,11 +19,12 @@
         <MudStack Row AlignItems="AlignItems.Center" Spacing="6" Class="d-flex flex-row">
             <MudButton StartIcon="@filterIcon"
                        Variant="(isFilterOpen ? Variant.Filled : Variant.Outlined )"
-                       OnClick="OpenFilter" DisableElevation>
+                       OnClick="OpenFilter" DisableElevation
+                       Color="Color.Info">
                 Filter
             </MudButton>
             <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.PostAdd"
-                       OnClick="OpenProductCreationForm">
+                       OnClick="OpenProductCreationForm" Color="Color.Info">
                 Add Product
             </MudButton>
         </MudStack>
@@ -32,7 +33,8 @@
 
     <MudCollapse Expanded="isFilterOpen" Style="width: 100%;">
         <MudStack AlignItems="AlignItems.Center" Class="mb-2 d-flex flex-md-row" Style="width: 100%;">
-            <MudSelect @bind-Value="fieldToFilter" Label="Field" Variant="Variant.Outlined"
+            <MudSelect T="FilterableField" Value="fieldToFilter" Label="Field" Variant="Variant.Outlined"
+                ValueChanged="@((e) => FieldToFilterChanged((FilterableField)e))"
                 AnchorOrigin="Origin.BottomCenter" Style="width: 100%;">
                 <MudSelectItem T="FilterableField" Value="FilterableField.PRODUCT_TYPE">Product Type</MudSelectItem>
                 <MudSelectItem T="FilterableField" Value="FilterableField.PRODUCTION_DATE">Production Date</MudSelectItem>
@@ -63,30 +65,29 @@
     <MudDivider Style="width: 80%;" Class="mx-auto mb-2" />
 
 
-
-    <MudTreeView T="string" ExpandOnClick Hover MaxHeight="500px" Width="100%" Class="overflow-y-auto">
-            @if (isLoading){
-                <MudStack Row Justify="Justify.Center" >
-                    <MudProgressCircular Color="Color.Default" Indeterminate="true" Class="mx-auto"  />
-                </MudStack>
-            }
-            else if (!Products.Any())
+    <MudExpansionPanels MultiExpansion Style="height: 600px;" Class="overflow-y-auto">
+        @if (isLoading)
+        {
+            <MudStack Row Justify="Justify.Center">
+                <MudProgressCircular Color="Color.Default" Indeterminate="true" Class="mx-auto" />
+            </MudStack>
+        }
+        else if (!Products.Any())
+        {
+            <MudText Typo="Typo.h6">No products have been added yet</MudText>
+        }
+        else if (!ProductsToDisplay.Any())
+        {
+            <MudText Typo="Typo.h6">The product you searched for does not exist</MudText>
+        }
+        else
+        {
+            @foreach (var product in ProductsToDisplay)
             {
-                <MudText Typo="Typo.h6">No products have been added yet</MudText>
+                <ProductPanel product="@product" />
             }
-            else if (!ProductsToDisplay.Any())
-            {
-                <MudText Typo="Typo.h6">The product you searched for does not exist</MudText>
-            }
-            else
-            {
-                @foreach (var product in ProductsToDisplay)
-                {
-                    <ProductTreeViewItem product="@product" />
-                }
-            }
-        
-    </MudTreeView>
+        }
+    </MudExpansionPanels>
 </MudStack>
 
 
@@ -106,24 +107,29 @@
     List<Product> ProductsToDisplay = new List<Product>();
     FilterableField fieldToFilter;
 
+    void FieldToFilterChanged(FilterableField newFieldToFilter)
+    {
+        fieldToFilter = newFieldToFilter;
+        FilterValue = null;
+        StartDate = null;
+        EndDate = null;
+        FilterProducts();
+        StateHasChanged();
+    }
 
     protected override async Task OnInitializedAsync()
     {
         isLoading = true;
 
-
-
         if (authenticationState is not null)
         {
             var state = await authenticationState;
-            Username = state?.User?.Identity?.Name ?? string.Empty;
-            var Claims = state?.User?.Claims;
+            var claims = state?.User?.Claims;
 
-            UserId = Claims.Single(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").Value;
-
-
-
+            UserId = claims.Single(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").Value;
         }
+
+        await FetchData();
 
         isLoading = false;
     }
@@ -131,7 +137,6 @@
 
     [CascadingParameter]
     private Task<AuthenticationState>? authenticationState { get; set; }
-    private string Username = "";
     string UserId { get; set; }
 
     async Task FetchData()

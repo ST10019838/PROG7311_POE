@@ -1,0 +1,71 @@
+﻿@using ST10019838_DamianDare_PROG7311_POE.Models
+@using static ST10019838_DamianDare_PROG7311_POE.Utils.Utils;
+
+<MudExpansionPanel Text="Panel One" MaxHeight="350" Class="overflow-y-scroll">
+    <TitleContent>
+        <MudCard Elevation="0">
+            <MudCardHeader>
+                <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Style="width: 100%; height: 100%;">
+                    <MudStack Row AlignItems="AlignItems.Center">
+                        <CardHeaderAvatar>
+                        <MudAvatar Variant="Variant.Outlined" Size="Size.Small">
+                            <MudImage Src="@(product.Type)" />
+                        </MudAvatar>
+                        </CardHeaderAvatar>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.body1">@product.Name</MudText>
+                            <MudText Typo="Typo.body2">Created: @product.DateCreated.ToShortDateString()</MudText>
+                        </CardHeaderContent>
+                    </MudStack>
+
+                    <MudStack Row Spacing="5" AlignItems="AlignItems.Center">
+                        <MudChip Color="@(product.Type is null ? Color.Surface : Color.Info)" Class="my-auto" Variant="Variant.Outlined">
+                            Type: @(ShortenString(product.Type ?? "N/A", 12))
+                        </MudChip>
+                        <MudChip Color="@(product.ProductionDate is null ? Color.Surface : Color.Info)" Class="my-auto" Variant="Variant.Outlined">
+                            Production Date: @(product.ProductionDate?.ToShortDateString() ?? "N/A")
+                        </MudChip>
+                    </MudStack>
+                    
+                </MudStack> 
+            </MudCardHeader>
+        </MudCard>
+    </TitleContent>
+    <ChildContent>
+        <MudStack>
+            <MudText Typo="Typo.body1" Align="Align.Justify" Style="word-wrap:break-word;">@product.Description</MudText>
+
+            <MudDivider />
+
+            <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Spacing="3">
+                <MudStack Row AlignItems="AlignItems.Center" Spacing="5">
+                    <MudText Color="Color.Surface" Class="my-auto" >
+                        Category: @(ShortenString(product.Category ?? "N/A", 12))
+                    </MudText>
+                </MudStack>
+
+                <MudDivider Vertical Style="height: 30px;" />
+
+                <MudStack Row AlignItems="AlignItems.Center" Spacing="5">
+                    <MudText Color="Color.Surface" Class="my-auto">
+                        Quantity: @(product?.Quantity?.ToString() ?? "N/A")
+                    </MudText>
+                    <MudText Color="Color.Surface" Class="my-auto">
+                        Price: @(product.Price?.ToString() ?? "N/A")
+                    </MudText>
+                </MudStack>
+            </MudStack>
+        </MudStack>
+    </ChildContent>
+</MudExpansionPanel>
+
+
+
+@code {
+    // The following parameter was adapted from C# Corner
+    // Author: Sean Franklin
+    // Link: https://www.c-sharpcorner.com/article/parameters-in-blazor-server-deep-dive/
+    [Parameter]
+    [EditorRequired]
+    public Product product { get; set; }
+}

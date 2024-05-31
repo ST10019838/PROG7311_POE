@@ -17,13 +17,13 @@
         <MudText Typo="Typo.h5">Farmers & Products</MudText>
 
         <MudStack Row AlignItems="AlignItems.Center" Spacing="6" Class="d-flex flex-row">
-            <MudButton StartIcon="@filterIcon"
+            <MudButton StartIcon="@filterIcon" Color="Color.Info"
                        Variant="(isFilterOpen ? Variant.Filled : Variant.Outlined )"
                        OnClick="OpenFilter" DisableElevation>
                 Filter Products
             </MudButton>
             <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.PostAdd"
-                       OnClick="OpenFarmerCreationForm">
+                       OnClick="OpenFarmerCreationForm" Color="Color.Info">
                 Add Farmer
             </MudButton>
         </MudStack>
@@ -32,11 +32,14 @@
 
     <MudCollapse Expanded="isFilterOpen" Style="width: 100%;">
         <MudStack AlignItems="AlignItems.Center" Class="mb-2 d-flex flex-md-row" Style="width: 100%;">
-            <MudSelect @bind-Value="fieldToFilter" Label="Field" Variant="Variant.Outlined"
+            <MudSelect T="FilterableField" Value="fieldToFilter" Label="Field" Variant="Variant.Outlined"
+                       ValueChanged="@((e) => FieldToFilterChanged((FilterableField)e))"
                        AnchorOrigin="Origin.BottomCenter" Style="width: 100%;">
                 <MudSelectItem T="FilterableField" Value="FilterableField.PRODUCT_TYPE">Product Type</MudSelectItem>
                 <MudSelectItem T="FilterableField" Value="FilterableField.PRODUCTION_DATE">Production Date</MudSelectItem>
             </MudSelect>
+
+            <MudText>@FilterValue</MudText>
 
             @switch (fieldToFilter)
             {
@@ -62,10 +65,8 @@
 
     <MudDivider Style="width: 80%;" Class="mx-auto mb-2" />
 
-
-
-
-    <MudTreeView T="string" ExpandOnClick Hover MaxHeight="500px" Width="100%" Class="overflow-y-auto">
+        
+    <MudExpansionPanels MultiExpansion Style="height: 600px;" Class="overflow-y-auto">
         @if (isLoading)
         {
             <MudStack Row Justify="Justify.Center">
@@ -84,24 +85,112 @@
         {
             @foreach (var farmer in FarmersToDisplay)
             {
-                <MudTreeViewItem Value="@($"Farmer {farmer.Information.User_id} | {farmer.Information.Email} | {ShortenString(farmer.Information.Name ?? "")} ")" Class="mb-7">
+                <MudExpansionPanel MaxHeight="350" Class="overflow-y-scroll">
+                    <TitleContent>
+                        <MudCard Elevation="0">
+                            <MudCardHeader>
+                                <CardHeaderAvatar>
+                                    <MudAvatar Variant="Variant.Outlined" Size="Size.Medium">
+                                        <MudImage Src="@(farmer.Information.Picture)" />
+                                    </MudAvatar>
+                                </CardHeaderAvatar>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.body1">@farmer.Information.Name</MudText>
+                                    <MudText Typo="Typo.body2">@farmer.Information.Email</MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                        </MudCard>
+                    </TitleContent>
+                    <ChildContent>
+                        <MudDivider Class="mb-3" />
 
-                @if (farmer.Products.Any())
-                {
-                    @foreach(var product in farmer.Products)
-                    {
-                        <ProductTreeViewItem product="@product" />
-                    }
-                }
-                else
-                {
-                    <MudText Typo="Typo.h6">No products have been added to this farmer yet</MudText>
-                }
-                </MudTreeViewItem>
+                        @if (farmer.Products.Any())
+                        {
+                            <MudExpansionPanels Class="overflow-y-auto" DisableBorders Elevation="0" MultiExpansion>
+                                @foreach (var product in farmer.Products)
+                                {
+                                    <ProductPanel product="@product" />
+                                }
+                            </MudExpansionPanels>
+
+                            <!--<MudTreeView T="string" ExpandOnClick Hover MaxHeight="650px" Width="100%" Class="overflow-y-auto">
+                                @foreach (var product in farmer.Products)
+                                {
+                                    <ProductPanel product="@product" />
+                                }
+                            </MudTreeView> -->
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.h6">No products have been added to this farmer yet</MudText>
+                        }
+                    </ChildContent>
+
+                </MudExpansionPanel>
+                <!-- <MudTreeViewItem Value="@($"Farmer : {ShortenString(farmer.Information.Name ?? "", 35)}")" Class="mb-6">
+                    <MudStack Spacing="3" Class="mt-1">
+
+
+
+                    </MudStack> -->
             }
         }
+    </MudExpansionPanels>
 
-    </MudTreeView>
+
+    <!--  <MudTreeView T="string" ExpandOnClick Hover MaxHeight="650px" Width="100%" Class="overflow-y-auto">
+         @if (isLoading)
+         {
+             <MudStack Row Justify="Justify.Center">
+                 <MudProgressCircular Color="Color.Default" Indeterminate="true" Class="mx-auto" />
+             </MudStack>
+         }
+         else if (!Farmers.Any())
+         {
+             <MudText Typo="Typo.h6">No farmers have been added yet</MudText>
+         }
+         else if (!FarmersToDisplay.Any())
+         {
+             <MudText Typo="Typo.h6">The farmers and their products you searched for do not exist</MudText>
+         }
+         else
+         {
+             @foreach (var farmer in FarmersToDisplay)
+             {
+                 <MudTreeViewItem Value="@($"Farmer : {ShortenString(farmer.Information.Name ?? "", 35)}")" Class="mb-6">
+                     <MudStack Spacing="3" Class="mt-1">
+                         <MudCard Outlined>
+                             <MudCardHeader>
+                                 <CardHeaderAvatar>
+                                     <MudAvatar Variant="Variant.Outlined" Size="Size.Medium">
+                                         <MudImage Src="@(farmer.Information.Picture)" />
+                                     </MudAvatar>
+                                 </CardHeaderAvatar>
+                                 <CardHeaderContent>
+                                     <MudText Typo="Typo.body1">@farmer.Information.Name</MudText>
+                                     <MudText Typo="Typo.body2">@farmer.Information.Email</MudText>
+                                 </CardHeaderContent>
+                             </MudCardHeader>
+                         </MudCard>
+
+                         @if (farmer.Products.Any())
+                         {
+                             @foreach (var product in farmer.Products)
+                             {
+                                 <ProductTreeViewItem product="@product" />
+                             }
+                         }
+                         else
+                         {
+                             <MudText Typo="Typo.h6">No products have been added to this farmer yet</MudText>
+                         }
+                     </MudStack>
+                    
+                 </MudTreeViewItem>
+             }
+         }
+
+     </MudTreeView> -->
 
 </MudStack>
 
@@ -124,6 +213,15 @@
     List<Farmer> FarmersToDisplay = new List<Farmer>();
     FilterableField fieldToFilter;
 
+    void FieldToFilterChanged(FilterableField newFieldToFilter)
+    {
+        fieldToFilter = newFieldToFilter;
+        FilterValue = null;
+        StartDate = null;
+        EndDate = null;
+        FilterFarmerProducts();
+        StateHasChanged();
+    }
 
     protected override async Task OnInitializedAsync()
     {
