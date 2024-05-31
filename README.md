@@ -1,6 +1,6 @@
 # ST10019838_PROG7311_POE
 ## WELCOME!
-Welcome to my repository! This repo contains all of my solutions to the PROG67311 POE.
+Welcome to my repository! This repo contains all of my solutions to the PROG7311 POE.
 
 </br>
 
