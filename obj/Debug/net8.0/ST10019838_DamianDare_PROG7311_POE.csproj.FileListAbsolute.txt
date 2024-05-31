@@ -274,3 +274,5 @@ H:\Year 3\Semester 1\PROG7311 - Programming 3A\POE\Repo\ST10019838_DamianDare_PR
 H:\Year 3\Semester 1\PROG7311 - Programming 3A\POE\Repo\ST10019838_DamianDare_PROG7311_POE\bin\Debug\net8.0\Kinde.Api.dll
 H:\Year 3\Semester 1\PROG7311 - Programming 3A\POE\Repo\ST10019838_DamianDare_PROG7311_POE\bin\Debug\net8.0\Polly.dll
 H:\Year 3\Semester 1\PROG7311 - Programming 3A\POE\Repo\ST10019838_DamianDare_PROG7311_POE\obj\Debug\net8.0\ST100198.062CE456.Up2Date
+H:\Year 3\Semester 1\PROG7311 - Programming 3A\POE\Repo\ST10019838_DamianDare_PROG7311_POE\bin\Debug\net8.0\Auth0.AspNetCore.Authentication.dll
+H:\Year 3\Semester 1\PROG7311 - Programming 3A\POE\Repo\ST10019838_DamianDare_PROG7311_POE\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.OpenIdConnect.dll

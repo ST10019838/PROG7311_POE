@@ -1,7 +1,8 @@
 ﻿
+using Auth0.AspNetCore.Authentication;
 using Carter;
-using Microsoft.EntityFrameworkCore;
-using ST10019838_DamianDare_PROG7311_POE.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ST10019838_DamianDare_PROG7311_POE.Endpoints;
 
@@ -11,10 +12,36 @@ public class AuthEndpoints : ICarterModule
     {
         var group = app.MapGroup("api/auth");
 
-        group.MapPost("login", Login);
-        group.MapPost("is-username-unique", IsUsernameUnique);
-        //group.MapGet("logout", Logout);
+        group.MapGet("login", Login);
+        //group.MapGet("is-username-unique", IsUsernameUnique);
+        group.MapGet("logout", Logout);
     }
+
+
+    public async Task Login(HttpContext httpContext, string redirectUri = "/")
+    {
+        var authenticationProperties = new LoginAuthenticationPropertiesBuilder()
+            .WithRedirectUri(redirectUri)
+            .Build();
+
+        await httpContext.ChallengeAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
+    }
+
+    public async Task Logout(HttpContext httpContext, string redirectUri = "/")
+    {
+        var authenticationProperties = new LogoutAuthenticationPropertiesBuilder()
+            .WithRedirectUri(redirectUri)
+            .Build();
+
+        await httpContext.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
+        await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+    }
+
+
+
+
+
+
 
     //public static async Task<IResult> Login(HttpContext context, IAuthorizationConfigurationProvider _authConfigurationProvider, IApplicationConfigurationProvider _appConfigurationProvider)
     //{
@@ -46,22 +73,23 @@ public class AuthEndpoints : ICarterModule
     //}
 
 
-    public static async Task<User> Login(AppDbContext db, UserCredentials credentials)
-    {
-        //await Task.Delay(1000);
-        //return "Hi";
-        return await db.Users.SingleAsync(u => u.UserName.Equals(credentials.UserName) && u.Password.Equals(credentials.Password));
-    }
+
+    //public static async Task<User> Login(AppDbContext db, UserCredentials credentials)
+    //{
+    //    //await Task.Delay(1000);
+    //    //return "Hi";
+    //    return await db.Users.SingleAsync(u => u.UserName.Equals(credentials.UserName) && u.Password.Equals(credentials.Password));
+    //}
 
     //public static async Task Logout(AppDbContext db, string redirectUri = "/")
     //{
 
     //}
 
-    public static async Task<bool> IsUsernameUnique(AppDbContext db, string username)
-    {
-        return !await db.Users.AnyAsync(u => u.UserName.Equals(username));
-    }
+    //public static async Task<bool> IsUsernameUnique(AppDbContext db, string username)
+    //{
+    //    return !await db.Users.AnyAsync(u => u.UserName.Equals(username));
+    //}
 }
 
 

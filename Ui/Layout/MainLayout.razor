@@ -1,4 +1,5 @@
 ﻿@using static ST10019838_DamianDare_PROG7311_POE.Endpoints.AuthEndpoints;
+@using ST10019838_DamianDare_PROG7311_POE.Ui.Pages;
 @inherits LayoutComponentBase
 @inject HttpClient http
 
@@ -27,7 +28,7 @@
             }
 
             <MudButton Variant="Variant.Filled" OnClick="LoginWith">Login</MudButton>
-
+            <Login />
         </MudStack>
     </MudAppBar>
 
